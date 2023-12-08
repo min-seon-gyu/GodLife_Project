@@ -1,80 +1,67 @@
 package com.example.web.member;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.DirectFieldBindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
-    private final MemberValidator memberValidator;
+    final private MemberService memberService;
 
-    @GetMapping("/signUp")
+    @GetMapping("/member/signUp")
     public String signUp(Model model){
         model.addAttribute("memberSignUpDto", new MemberSignUpDto());
-        //model.addAttribute("member", new Member());
         return "signUp";
     }
 
-    @GetMapping("/findId")
+    @GetMapping("/member/findId")
     public String findId(Model model){
         model.addAttribute("memberFindIdDto", new MemberFindIdDto());
         return "findId";
     }
 
-    @GetMapping("/findPassword")
+    @GetMapping("/member/findPassword")
     public String findPassword(Model model){
         model.addAttribute("memberFindPasswordDto", new MemberFindPasswordDto());
         return "findPassword";
     }
 
-    @PostMapping("/signUp")
-    public String signUp(MemberSignUpDto memberSignUpDto, BindingResult bindingResult, Model model){
-        if(memberValidator.supports(MemberSignUpDto.class)){
-            Errors errors = new DirectFieldBindingResult(memberSignUpDto, "memberSignUpDto");
-            memberValidator.validate(memberSignUpDto, errors);
-            bindingResult.addAllErrors(errors);
-        }
-
-        if(bindingResult.hasErrors()){
-            return "signUp";
-        }
-        return "index";
+    @PostMapping("/member/")
+    public String signUp(MemberSignUpDto memberSignUpDto){
+        log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getId(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
+        return "signUpSuccess";
     }
 
-    @PostMapping("/findId")
-    public String findId(MemberFindIdDto memberFindIdDto, BindingResult bindingResult, Model model){
-        if(memberValidator.supports(MemberFindIdDto.class)){
-            Errors errors = new DirectFieldBindingResult(memberFindIdDto, "memberFindIdDto");
-            memberValidator.validate(memberFindIdDto, errors);
-            bindingResult.addAllErrors(errors);
-        }
-
-        if(bindingResult.hasErrors()){
-            return "findId";
-        }
-        return "index";
+    @GetMapping("/member/id")
+    public String findId(MemberFindIdDto memberFindIdDto){
+        log.info("아이디 찾기 요청 - name : {}, email : {}", memberFindIdDto.getName(), memberFindIdDto.getEmail());
+        return "findIdSuccess";
     }
 
-    @PostMapping("/findPassword")
-    public String findPassword(MemberFindPasswordDto memberFindPasswordDto, BindingResult bindingResult, Model model){
-        if(memberValidator.supports(MemberFindPasswordDto.class)){
-            Errors errors = new DirectFieldBindingResult(memberFindPasswordDto, "memberFindPasswordDto");
-            memberValidator.validate(memberFindPasswordDto, errors);
-            bindingResult.addAllErrors(errors);
-        }
+    @GetMapping("/member/password")
+    public String findPassword(MemberFindPasswordDto memberFindPasswordDto){
+        log.info("아이디 찾기 요청 - id : {}, name : {}, email : {}", memberFindPasswordDto.getId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
+        return "findPasswordSuccess";
+    }
 
-        if(bindingResult.hasErrors()){
-            return "findPassword";
-        }
-        return "index";
+    @GetMapping("/member/checkId")
+    @ResponseBody
+    public boolean isDuplicationId(@RequestParam("id") String id){
+        boolean result = memberService.checkId(id);
+        log.info("아이디 중복 확인 요청 - id : {}, result : {}", id, result);
+        return result;
+    }
+
+    @GetMapping("/member/checkEmail")
+    @ResponseBody
+    public boolean isDuplicationEmail(@RequestParam("email") String email){
+        boolean result = memberService.checkEmail(email);
+        log.info("이메일 중복 확인 요청 - email : {}, result : {}", email, result);
+        return result;
     }
 }

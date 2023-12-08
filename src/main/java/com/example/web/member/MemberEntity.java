@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,19 +22,18 @@ public class MemberEntity {
     private String name;
     @Column(name = "EMAIL")
     private String email;
-    @Column(name = "DATE")
-    private Date date;
+
     @OneToMany(mappedBy = "memberEntity")
     List<MemberReservationEntity> memberReservations = new ArrayList<>();
 
-    protected MemberEntity(String password, String name, String email, Date date){
+    protected MemberEntity(String id, String password, String name, String email){
+        this.id = id;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.date = date;
     }
 
-    public static MemberEntity CreateMemberEntity(String password, String name, String email, Date date){
-        return new MemberEntity(password, name, email, date);
+    public static MemberEntity CreateMemberEntity(String id, String password, String name, String email){
+        return new MemberEntity(id, password, name, email);
     }
 }

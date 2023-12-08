@@ -8,9 +8,7 @@ public class MemberSignUpDto {
 
     private String id;
     private String password;
-    private String passwordCheck;
     private String name;
     private String email;
-    private String date;
 
 }
