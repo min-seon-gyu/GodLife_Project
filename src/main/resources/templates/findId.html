@@ -28,7 +28,6 @@
         <div class="py-1 text-center">
             <h2>아이디 찾기</h2>
         </div>
-        <form action="/member/id" method="get" onsubmit="return validateForm()">
             <div>
                 <label>이름</label>
                 <input type="text" id="name" class="form-control" style="margin-bottom: 10px"/>
@@ -42,30 +41,16 @@
             </div>
 
             <div>
-                <button class="w-50 btn btn-primary btn-lg" type="submit" style="height:40px; font-size:16px ;margin-bottom: 10px">인증번호 보내기</button>
+                <button class="w-100 btn btn-primary btn-lg" id="submit-button">이메일 발송</button>
             </div>
-        </form>
-        <form>
-            <div>
-                <label>인증번호</label>
-                <input type="text" id="asd" class="form-control" style="margin-bottom: 10px"/>
-                <p style="color:red" id="asd1"></p>
-            </div>
-
-            <div>
-                <button class="w-50 btn btn-primary btn-lg" type="submit" style="height:40px; font-size:16px">인증번호 확인</button>
-            </div>
-        </form>
-
     </div>
 </div>
-<!-- /container -->
 <script>
+document.getElementById("submit-button").addEventListener("click", validateForm);
 
-function validateForm(){
+async function validateForm(){
 
     var result = true;
-    var certification_Number;
 
     // 이름 유효성 검사
     var nameInput = document.getElementById('name').value;
@@ -94,12 +79,19 @@ function validateForm(){
         emailInputError.textContent = '';
     }
 
-    // 모든 유효성 검사를 통과하면 true 반환하여 폼 제출 허용
-    return result;
+    if (result) {
+        try {
+            const response = await fetch(`/member/id?name=${nameInput}&email=${emailInput}`);
+            if (response.ok) {
+                window.location.replace('http://www.localhost:8080/member/findIdSuccess');
+            } else {
+                alert('입력하신 정보를 확인해주세요.');
+            }
+        } catch (error) {
+            console.error('데이터 전송 중 오류 발생:', error);
+        }
+    }
 }
-
-
-
 </script>
 </body>
 </html>
