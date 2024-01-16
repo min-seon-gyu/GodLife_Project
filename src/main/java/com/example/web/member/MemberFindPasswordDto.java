@@ -1,12 +1,14 @@
 package com.example.web.member;
 
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+
+@Data
 public class MemberFindPasswordDto {
-    private String id;
+    private String loginId;
     private String name;
     private String email;
 }

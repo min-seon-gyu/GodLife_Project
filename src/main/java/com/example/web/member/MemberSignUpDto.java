@@ -1,14 +1,12 @@
 package com.example.web.member;
 
-import lombok.Getter;
-import lombok.Setter;
-@Getter
-@Setter
-public class MemberSignUpDto {
+import lombok.Data;
 
-    private String id;
+@Data
+public class MemberSignUpDto {
+    private String loginId;
     private String password;
     private String name;
     private String email;
-
+    private String address;
 }
