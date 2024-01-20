@@ -6,30 +6,30 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MemberController {
     @GetMapping("/member/createSignUp")
-    public String createSignUp(){ return "signUp"; }
+    public String createSignUp(){ return "createSignUp"; }
 
     @GetMapping("/member/createFindLoginId")
     public String createFindLoginId(){
-        return "findId";
+        return "createFindLoginId";
     }
 
     @GetMapping("/member/createFindPassword")
     public String createFindPassword(){
-        return "findPassword";
+        return "createFindPassword";
     }
 
     @GetMapping("/member/createSignUpSuccess")
     public String createSignUpSuccess(){
-        return "signUpSuccess";
+        return "createSignUpSuccess";
     }
 
     @GetMapping("/member/createFindLoginIdSuccess")
     public String createFindLoginIdSuccess(){
-        return "findIdSuccess";
+        return "createFindLoginIdSuccess";
     }
 
     @GetMapping("/member/createFindPasswordSuccess")
     public String createFindPasswordSuccess(){
-        return "findPasswordSuccess";
+        return "createFindPasswordSuccess";
     }
 }
