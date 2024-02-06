@@ -5,19 +5,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
 @Getter
-public class JwtMemberDetails implements UserDetails {
+public class MemberDetails implements UserDetails {
 
     private final Member member;
-    private final Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        Collection<GrantedAuthority> collections = new ArrayList<>();
+        collections.add(() -> member.getRole().name());
+        return collections;
     }
 
     @Override
