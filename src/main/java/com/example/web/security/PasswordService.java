@@ -1,18 +1,20 @@
-package com.example.web.member;
+package com.example.web.security;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.security.SecureRandom;
 
 @Component
+@RequiredArgsConstructor
 public class PasswordService {
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private int size = 12;
-    private SecureRandom sr = new SecureRandom();
+    private final PasswordEncoder passwordEncoder;
+    private final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private final int size = 12;
+    private final SecureRandom sr = new SecureRandom();
 
-    public String create(){
+    public String getRandomPassword(){
         StringBuffer sb = new StringBuffer();
         for(int i = 0 ; i < size ; i++){
             sb.append(chars.charAt(sr.nextInt(chars.length())));
@@ -20,11 +22,11 @@ public class PasswordService {
         return sb.toString();
     }
 
-    public String encryption(String password){
+    public String encode(String password){
         return passwordEncoder.encode(password);
     }
 
-    public boolean match(CharSequence rawPassword, String encodedPassword){
+    public boolean matches(CharSequence rawPassword, String encodedPassword){
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }

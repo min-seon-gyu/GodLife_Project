@@ -6,16 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,12 +20,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // 필터 체인에 등록
 @RequiredArgsConstructor
 public class SecurityConfig{
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
 
-    private final JwtAuthenticationManager jwtAuthenticationManager;
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -38,8 +39,10 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf((auth) -> auth.disable())
+                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin((auth) -> auth.disable())
+                .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests(request -> {
                     //인증이 필요한 요청
                     request.requestMatchers(HttpMethod.PATCH,"/member").authenticated();
@@ -49,9 +52,7 @@ public class SecurityConfig{
                     //그 외 요청
                     request.anyRequest().permitAll();
                 })
-                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
-                .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationManager), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
