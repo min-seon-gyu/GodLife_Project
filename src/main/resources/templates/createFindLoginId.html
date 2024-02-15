@@ -31,67 +31,43 @@
             <div>
                 <label>이름</label>
                 <input type="text" id="name" class="form-control" style="margin-bottom: 10px"/>
-                <p style="color:red" id="nameError"></p>
             </div>
 
             <div>
                 <label>이메일</label>
                 <input type="text" id="email" class="form-control" style="margin-bottom: 10px"/>
-                <p style="color:red" id="emailError"></p>
             </div>
 
             <div>
-                <button class="w-100 btn btn-primary btn-lg" id="submit-button">이메일 발송</button>
+                <button class="w-100 btn btn-primary btn-lg" onclick="findId()">이메일 발송</button>
             </div>
     </div>
 </div>
 <script>
-document.getElementById("submit-button").addEventListener("click", validateForm);
+    function findId() {
+        var email = document.getElementById("email").value;
+        var name = document.getElementById("name").value;
 
-async function validateForm(){
+        var formData = {
+            email: email,
+            name: name
+        };
 
-    var result = true;
-
-    // 이름 유효성 검사
-    var nameInput = document.getElementById('name').value;
-    var nameInputError = document.getElementById('nameError');
-    if (nameInput === '') {
-        nameInputError.textContent = '이름을 입력해주세요.';
-        result = false;
-    }
-    else{
-        nameInputError.textContent = '';
-    }
-
-    // 이메일 유효성 검사
-    var emailInput = document.getElementById('email').value;
-    var emailInputError = document.getElementById('emailError');
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailInput === '') {
-        emailInputError.textContent = '이메일을 입력해주세요.';
-        result = false;
-    }
-    else if (!emailRegex.test(emailInput)) {
-        emailInputError.textContent = '올바른 이메일 형식이 아닙니다.';
-        result = false;
-    }
-    else{
-        emailInputError.textContent = '';
-    }
-
-    if (result) {
-        try {
-            const response = await fetch(`/member/id?name=${nameInput}&email=${emailInput}`);
-            if (response.ok) {
-                window.location.replace('http://www.localhost:8080/member/findIdSuccess');
-            } else {
-                alert('입력하신 정보를 확인해주세요.');
+        fetch("/findLoginId", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => {
+            if(res.status === 400){
+                alert("입력하신 정보가 올바르지 않습니다.");
+            }else{
+                window.location.href="createFindLoginIdSuccessView"
             }
-        } catch (error) {
-            console.error('데이터 전송 중 오류 발생:', error);
-        }
+        });
     }
-}
 </script>
 </body>
 </html>
