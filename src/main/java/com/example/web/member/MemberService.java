@@ -1,7 +1,8 @@
 package com.example.web.member;
 
-import com.example.web.security.JwtProvider;
-import com.example.web.security.MemberRole;
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
+import com.example.web.security.PasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,33 +29,17 @@ public class MemberService {
         log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getLoginId(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
         if(validationCheck(memberSignUpDto)){
             log.info("회원가입 요청 실패- id : {}, name : {}, email : {}, {}", memberSignUpDto.getLoginId(), memberSignUpDto.getName(), memberSignUpDto.getEmail(), "이미 회원가입 했습니다.");
-            throw new IllegalStateException();
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "이미 가입된 회원정보입니다.");
         }
         Member member = Member.builder()
                 .loginId(memberSignUpDto.getLoginId())
                 .email(memberSignUpDto.getEmail())
                 .name(memberSignUpDto.getName())
-                .address(memberSignUpDto.getAddress())
-                .password(passwordService.encryption(memberSignUpDto.getPassword()))
+                .password(passwordService.encode(memberSignUpDto.getPassword()))
                 .role(MemberRole.USER)
                 .build();
 
         memberRepository.save(member);
-    }
-
-    public String login(MemberLoginDto memberLoginDto) {
-        log.info("로그인 요청 - id : {}", memberLoginDto.getLoginId());
-        Optional<Member> findMember = memberRepository.findTop1ByLoginId(memberLoginDto.getLoginId());
-        if (findMember.isEmpty()) {
-            log.info("로그인 요청 실패- id : {}", memberLoginDto.getLoginId());
-            throw new IllegalStateException();
-        }
-        Member member = findMember.get();
-        if (!passwordService.match(memberLoginDto.getPassword(), member.getPassword())) {
-            log.info("로그인 요청 실패- id : {}", memberLoginDto.getLoginId());
-            throw new IllegalStateException();
-        }
-        return JwtProvider.generateJwtToken(member);
     }
 
     public void logout() {
@@ -77,7 +62,7 @@ public class MemberService {
         Optional<Member> member = memberRepository.findTop1ByNameAndEmail(memberFindLoginIdDto.getName(), memberFindLoginIdDto.getEmail());
         if(member.isEmpty()){
             log.info("아이디 찾기 요청 실패 - name : {}, email : {}, {}", memberFindLoginIdDto.getName(), memberFindLoginIdDto.getEmail(), "해당하는 회원이 없습니다.");
-            throw new IllegalStateException();
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다.");
         }
         sendMail(EmailType.ID, memberFindLoginIdDto.getEmail(), member.get().getLoginId());
     }
@@ -89,15 +74,15 @@ public class MemberService {
         Optional<Member> member = memberRepository.findTop1ByLoginIdAndNameAndEmail(memberFindPasswordDto.getLoginId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
         if(member.isEmpty()){
             log.info("비밀번호 찾기 요청 실패 - id : {}, name : {}, email : {}. {}", memberFindPasswordDto.getLoginId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), "해당하는 회원이 없습니다.");
-            throw new IllegalStateException();
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다.");
         }
-        String password = passwordService.create();
+        String password = passwordService.getRandomPassword();
         Member findMember = memberRepository.findTop1ByLoginId(memberFindPasswordDto.getLoginId()).get();
-        findMember.changePassword(passwordService.encryption(password));
+        findMember.changePassword(passwordService.encode(password));
         sendMail(EmailType.PASSWORD, memberFindPasswordDto.getEmail(), password);
     }
 
-    @Transactional(readOnly = true)
+
     private boolean validationCheck(MemberSignUpDto memberSignUpDto){
         return memberRepository.existsByLoginId(memberSignUpDto.getLoginId()) || memberRepository.existsByEmail(memberSignUpDto.getEmail());
     }
