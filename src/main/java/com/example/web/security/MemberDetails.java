@@ -1,7 +1,6 @@
 package com.example.web.security;
 
 import com.example.web.member.Member;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,15 +8,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-@Getter
 public class MemberDetails implements UserDetails {
 
-    private final Member member;
+    private final MemberSecurityDto member;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collections = new ArrayList<>();
-        collections.add(() -> member.getRole().name());
+        collections.add(() -> member.getRole());
         return collections;
     }
 
@@ -28,7 +26,7 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getLoginId();
+        return member.getUsername();
     }
 
     @Override
