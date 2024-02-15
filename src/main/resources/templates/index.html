@@ -28,9 +28,9 @@
         <div class="py-1 text-center">
             <h2>통합 예약 사이트</h2>
         </div>
-        <form method="post">
+        <form method="post" action="/login">
             <div>
-                <input type="text" id="id" name="id" class="form-control" style="margin-bottom: 10px" placeholder="아이디를 입력하세요"/>
+                <input type="text" id="username" name="username" class="form-control" style="margin-bottom: 10px" placeholder="아이디를 입력하세요"/>
             </div>
 
             <div>
@@ -38,20 +38,20 @@
             </div>
 
             <div>
-                <button class="w-100 btn btn-primary btn-lg" type="button">로그인</button>
+                <button class="w-100 btn btn-primary btn-lg">로그인</button>
             </div>
         </form>
 
         <hr class="my-4" />
         <div class="row" style="text-align: center">
             <div class="col">
-                <a href="/member/createSignUp">회원가입</a>
+                <a href="/createSignUpView">회원가입</a>
             </div>
             <div class="col">
-                <a href="/member/createFindLoginId" >아이디 찾기</a>
+                <a href="/createFindLoginIdView" >아이디 찾기</a>
             </div>
             <div class="col">
-                <a href="/member/createFindPassword" >비밀번호 찾기</a>
+                <a href="/createFindPasswordView" >비밀번호 찾기</a>
             </div>
         </div>
     </div>
