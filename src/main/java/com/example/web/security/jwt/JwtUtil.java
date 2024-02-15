@@ -1,4 +1,4 @@
-package com.example.web.security;
+package com.example.web.security.jwt;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +36,11 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(MemberDetails memberDetails) {
+    public String createJwt(String username, String role) {
 
         return Jwts.builder()
-                .claim("username", memberDetails.getUsername())
-                .claim("role", memberDetails.getAuthorities())
+                .claim("username", username)
+                .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

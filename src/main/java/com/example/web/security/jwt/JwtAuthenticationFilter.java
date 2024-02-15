@@ -1,9 +1,9 @@
-package com.example.web.security;
+package com.example.web.security.jwt;
 
 import com.example.web.member.MemberLoginDto;
+import com.example.web.security.MemberDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.IOException;
-
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -22,8 +20,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("로그인 시도");
-
         ObjectMapper om = new ObjectMapper();
         MemberLoginDto memberLoginDto = null;
 
@@ -32,8 +28,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        System.out.println("memberLoginDto = " + memberLoginDto);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
@@ -44,29 +38,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과 UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
         // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
 
-
-        Authentication authentication =
-                authenticationManager.authenticate(authenticationToken);
-
-        System.out.println("authentication = " + authentication);
-
-        MemberDetails principalDetails = (MemberDetails) authentication.getPrincipal();
-        System.out.println("Authentication : "+principalDetails.getMember().getLoginId());
-        System.out.println("Authentication : "+principalDetails.getMember().getPassword());
-
         return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult){
         System.out.println("Success");
-        String token = jwtUtil.createJwt((MemberDetails) authResult.getPrincipal());
-        response.addHeader("Authorization", "Bearer " + token);
+        MemberDetails memberDetails = (MemberDetails) authResult.getPrincipal();
+        String username = memberDetails.getUsername();
+        String role = memberDetails.getAuthorities().iterator().next().getAuthority();
+        response.addHeader("Authorization", "Bearer " + jwtUtil.createJwt(username, role));
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         System.out.println("Fail");
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.setStatus(401);
     }
 }
