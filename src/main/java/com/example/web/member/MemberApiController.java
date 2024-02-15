@@ -35,13 +35,13 @@ public class MemberApiController {
     }
 
     @PostMapping("/findLoginId")
-    public ResponseEntity findLoginId(@RequestBody MemberFindLoginIdDto memberFindLoginIdDto){
+    public ResponseEntity findLoginId(@Valid @RequestBody MemberFindLoginIdDto memberFindLoginIdDto){
         memberService.findLoginId(memberFindLoginIdDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/findPassword")
-    public ResponseEntity findPassword(@RequestBody MemberFindPasswordDto memberFindPasswordDto){
+    public ResponseEntity findPassword(@Valid @RequestBody MemberFindPasswordDto memberFindPasswordDto){
         memberService.findPassword(memberFindPasswordDto);
         return new ResponseEntity(HttpStatus.OK);
     }
