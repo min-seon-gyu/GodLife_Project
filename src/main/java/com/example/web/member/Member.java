@@ -1,7 +1,6 @@
 package com.example.web.member;
 
 import com.example.web.common.JpaBaseEntity;
-import com.example.web.security.MemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,18 +21,16 @@ public class Member extends JpaBaseEntity {
     private String name;
     @Column(unique = true)
     private String email;
-    private String address;
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
     @Builder(access = AccessLevel.PROTECTED)
-    private Member(String loginId, String password, String name, String email, String address, MemberRole role){
+    private Member(String loginId, String password, String name, String email, MemberRole role){
         this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.address = address;
         this.role = role;
     }
 
