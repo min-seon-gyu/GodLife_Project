@@ -12,7 +12,7 @@ import lombok.Setter;
 @Data
 public class MemberFindPasswordDto {
     @NotBlank(message = "아이디를 입력해주세요")
-    @Size(min = 8, max = 12, message = "아이디는 8자 이상 12자 이하여야합니다.")
+    @Size(min = 6, max = 12, message = "아이디는 6자 이상 12자 이하여야합니다.")
     private String loginId;
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
