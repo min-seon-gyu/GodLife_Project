@@ -22,11 +22,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig{
 
-    private OAuth2MemberDetailsService oAuth2MemberDetailsService;
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+    private final OAuth2MemberDetailsService oAuth2MemberDetailsService;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
