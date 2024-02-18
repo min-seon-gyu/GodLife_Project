@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <link
+            th:href="@{/css/bootstrap.min.css}"
+            href="../css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <style>
+      .background {
+        width: 100vw;
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        max-width: 400px;
+      }
+    </style>
+</head>
+<body>
+<div class="background">
+    <div class="container">
+        <div class="py-1 text-center">
+            <h2>회원정보</h2>
+        </div>
+        <div>
+            <label>아이디</label>
+            <input type="text" id="loginId" th:value="${member.loginId}" name="loginId" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+        </div>
+
+        <div>
+            <label>비밀번호</label>
+            <input type="password" id="password" name="password" class="form-control" style="margin-bottom: 10px"/>
+        </div>
+
+        <div>
+            <label>비밀번호 확인</label>
+            <input type="password" id="passwordCheck" class="form-control" style="margin-bottom: 10px"/>
+        </div>
+
+        <div>
+            <label>이름</label>
+            <input type="text" id="name" th:value="${member.name}" name="name" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+        </div>
+
+        <div>
+            <label>이메일</label>
+            <input type="text" id="email" th:value="${member.email}" name="email" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+        </div>
+
+        <div>
+            <button class="w-100 btn btn-primary btn-lg" onclick="update()" style="margin-bottom: 10px">수정하기</button>
+        </div>
+
+        <div>
+            <a href="/" class="w-100 btn btn-primary btn-lg" role="button">돌아가기</a>
+        </div>
+    </div>
+</div>
+<script>
+    function update() {
+        var password = document.getElementById("password").value;
+        var passwordCheck = document.getElementById("passwordCheck").value;
+
+        var formData = {
+            password: password,
+            passwordCheck: passwordCheck
+        };
+
+        fetch("/member", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => {
+            if(res.status !== 200){
+                alert("입력하신 정보가 올바르지 않습니다.");
+            }else{
+                window.location.href="createUpdateSuccessView"
+            }
+        });
+    }
+</script>
+</body>
+</html>

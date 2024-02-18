@@ -58,13 +58,18 @@ public class ViewController {
         return "createFindPasswordSuccess";
     }
 
-    @GetMapping("/createMyPageView")
-    public String createMyPageView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
+    @GetMapping("/createUpdateView")
+    public String createUpdateView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
         Optional<Member> findMember = memberRepository.findTop1ByLoginId(memberDetails.getUsername());
         if(findMember.isPresent()){
             Member member = findMember.get();
             model.addAttribute("member", member);
         }
-        return "createMyPage";
+        return "createUpdate";
+    }
+
+    @GetMapping("/createUpdateSuccessView")
+    public String createUpdateSuccessView(){
+        return "createUpdateSuccess";
     }
 }
