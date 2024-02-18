@@ -2,11 +2,11 @@ package com.example.web.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class PasswordService {
     private final PasswordEncoder passwordEncoder;

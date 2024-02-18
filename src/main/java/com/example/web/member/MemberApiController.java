@@ -1,5 +1,7 @@
 package com.example.web.member;
 
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,13 +14,10 @@ public class MemberApiController {
     private final MemberService memberService;
     @PostMapping("/member")
     public ResponseEntity signUp(@Valid @RequestBody MemberSignUpDto memberSignUpDto){
+        if(!memberSignUpDto.validPassword()){
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 맞지 않습니다.");
+        }
         memberService.signUp(memberSignUpDto);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping("/member/logout")
-    public ResponseEntity logout(){
-        memberService.logout();
         return new ResponseEntity(HttpStatus.OK);
     }
 

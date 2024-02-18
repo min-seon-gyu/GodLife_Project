@@ -1,11 +1,11 @@
 package com.example.web.security.jwt;
 
-import com.example.web.member.MemberLoginDto;
 import com.example.web.security.MemberDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +15,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    @Data
+    public static class MemberLoginDto{
+        private String loginId;
+        private String password;
+    }
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 

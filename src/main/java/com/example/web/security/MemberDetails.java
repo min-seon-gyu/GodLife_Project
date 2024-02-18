@@ -1,6 +1,5 @@
 package com.example.web.security;
 
-import com.example.web.member.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
