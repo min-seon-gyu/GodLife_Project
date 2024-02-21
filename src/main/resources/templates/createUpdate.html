@@ -30,12 +30,12 @@
         </div>
         <div>
             <label>아이디</label>
-            <input type="text" id="loginId" th:value="${member.loginId}" name="loginId" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+            <input type="text" th:value="${member.username}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
         </div>
 
         <div>
             <label>비밀번호</label>
-            <input type="password" id="password" name="password" class="form-control" style="margin-bottom: 10px"/>
+            <input type="password" id="password" class="form-control" style="margin-bottom: 10px"/>
         </div>
 
         <div>
@@ -45,12 +45,12 @@
 
         <div>
             <label>이름</label>
-            <input type="text" id="name" th:value="${member.name}" name="name" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+            <input type="text" th:value="${member.name}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
         </div>
 
         <div>
             <label>이메일</label>
-            <input type="text" id="email" th:value="${member.email}" name="email" class="form-control" style="margin-bottom: 10px" readonly="true"/>
+            <input type="text" th:value="${member.email}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
         </div>
 
         <div>

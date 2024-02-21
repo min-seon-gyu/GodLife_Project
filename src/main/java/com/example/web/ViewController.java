@@ -38,14 +38,14 @@ public class ViewController {
         return "createSignUpSuccess";
     }
 
-    @GetMapping("/createFindLoginIdView")
+    @GetMapping("/createFindUsernameView")
     public String createFindLoginIdView(){
-        return "createFindLoginId";
+        return "createFindUsername";
     }
 
-    @GetMapping("/createFindLoginIdSuccessView")
+    @GetMapping("/createFindUsernameSuccessView")
     public String createFindLoginIdSuccessView(){
-        return "createFindLoginIdSuccess";
+        return "createFindUsernameSuccess";
     }
 
     @GetMapping("/createFindPasswordView")
@@ -60,7 +60,7 @@ public class ViewController {
 
     @GetMapping("/createUpdateView")
     public String createUpdateView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
-        Optional<Member> findMember = memberRepository.findTop1ByLoginId(memberDetails.getUsername());
+        Optional<Member> findMember = memberRepository.findTop1ByUsername(memberDetails.getUsername());
         if(findMember.isPresent()){
             Member member = findMember.get();
             model.addAttribute("member", member);

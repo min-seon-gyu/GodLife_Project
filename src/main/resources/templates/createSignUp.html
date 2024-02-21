@@ -31,12 +31,12 @@
         </div>
             <div>
                 <label>아이디 (6자 이상 12자 이하여야합니다.)</label>
-                <input type="text" id="loginId" name="loginId" class="form-control" style="margin-bottom: 10px"/>
+                <input type="text" id="username" class="form-control" style="margin-bottom: 10px"/>
             </div>
 
             <div>
                 <label>비밀번호 (8자 이상 12자 이하여야합니다.)</label>
-                <input type="password" id="password" name="password" class="form-control" style="margin-bottom: 10px"/>
+                <input type="password" id="password" class="form-control" style="margin-bottom: 10px"/>
             </div>
 
             <div>
@@ -46,12 +46,12 @@
 
             <div>
                 <label>이름</label>
-                <input type="text" id="name" name="name" class="form-control" style="margin-bottom: 10px"/>
+                <input type="text" id="name" class="form-control" style="margin-bottom: 10px"/>
             </div>
 
             <div>
                 <label>이메일</label>
-                <input type="text" id="email" name="email" class="form-control" style="margin-bottom: 10px"/>
+                <input type="text" id="email" class="form-control" style="margin-bottom: 10px"/>
             </div>
 
             <div>
@@ -65,14 +65,14 @@
 </div>
 <script>
     function signup() {
-        var loginId = document.getElementById("loginId").value;
+        var username = document.getElementById("username").value;
         var email = document.getElementById("email").value;
         var password = document.getElementById("password").value;
         var passwordCheck = document.getElementById("passwordCheck").value;
         var name = document.getElementById("name").value;
 
         var formData = {
-            loginId: loginId,
+            username: username,
             email: email,
             password: password,
             passwordCheck: passwordCheck,
