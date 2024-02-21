@@ -26,13 +26,13 @@ public class MemberService {
 
     @Transactional
     public void signUp(MemberSignUpDto memberSignUpDto){
-        log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getLoginId(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
+        log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getUsername(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
         if(validationCheck(memberSignUpDto)){
-            log.info("회원가입 요청 실패- id : {}, name : {}, email : {}, {}", memberSignUpDto.getLoginId(), memberSignUpDto.getName(), memberSignUpDto.getEmail(), "이미 회원가입 했습니다.");
+            log.info("회원가입 요청 실패- id : {}, name : {}, email : {}, {}", memberSignUpDto.getUsername(), memberSignUpDto.getName(), memberSignUpDto.getEmail(), "이미 회원가입 했습니다.");
             throw new RestApiException(ErrorCode.BAD_REQUEST, "이미 가입된 회원정보입니다.");
         }
         Member member = Member.builder()
-                .loginId(memberSignUpDto.getLoginId())
+                .username(memberSignUpDto.getUsername())
                 .email(memberSignUpDto.getEmail())
                 .name(memberSignUpDto.getName())
                 .password(passwordService.encode(memberSignUpDto.getPassword()))
@@ -42,49 +42,44 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void logout() {
-    }
-
-    @Transactional
     public void update(MemberUpdateDto memberUpdateDto) {
-        log.info("업데이트 요청 - address : {}", memberUpdateDto.getAddress());
     }
 
     @Transactional
     public void delete() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<Member> findMember = memberRepository.findTop1ByLoginId((String) authentication.getPrincipal());
+        Optional<Member> findMember = memberRepository.findTop1ByUsername((String) authentication.getPrincipal());
         memberRepository.delete(findMember.get());
     }
 
-    public void findLoginId(MemberFindLoginIdDto memberFindLoginIdDto){
-        log.info("아이디 찾기 요청 - name : {}, email : {}", memberFindLoginIdDto.getName(), memberFindLoginIdDto.getEmail());
-        Optional<Member> member = memberRepository.findTop1ByNameAndEmail(memberFindLoginIdDto.getName(), memberFindLoginIdDto.getEmail());
+    public void findLoginId(MemberFindUsernameDto memberFindUsernameDto){
+        log.info("아이디 찾기 요청 - name : {}, email : {}", memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail());
+        Optional<Member> member = memberRepository.findTop1ByNameAndEmail(memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail());
         if(member.isEmpty()){
-            log.info("아이디 찾기 요청 실패 - name : {}, email : {}, {}", memberFindLoginIdDto.getName(), memberFindLoginIdDto.getEmail(), "해당하는 회원이 없습니다.");
+            log.info("아이디 찾기 요청 실패 - name : {}, email : {}, {}", memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail(), "해당하는 회원이 없습니다.");
             throw new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다.");
         }
-        sendMail(EmailType.ID, memberFindLoginIdDto.getEmail(), member.get().getLoginId());
+        sendMail(EmailType.ID, memberFindUsernameDto.getEmail(), member.get().getUsername());
     }
 
 
     @Transactional
     public void findPassword(MemberFindPasswordDto memberFindPasswordDto) {
-        log.info("비밀번호 찾기 요청 - id : {}, name : {}, email : {}", memberFindPasswordDto.getLoginId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
-        Optional<Member> member = memberRepository.findTop1ByLoginIdAndNameAndEmail(memberFindPasswordDto.getLoginId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
+        log.info("비밀번호 찾기 요청 - id : {}, name : {}, email : {}", memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
+        Optional<Member> member = memberRepository.findTop1ByUsernameAndNameAndEmail(memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
         if(member.isEmpty()){
-            log.info("비밀번호 찾기 요청 실패 - id : {}, name : {}, email : {}. {}", memberFindPasswordDto.getLoginId(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), "해당하는 회원이 없습니다.");
+            log.info("비밀번호 찾기 요청 실패 - id : {}, name : {}, email : {}. {}", memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), "해당하는 회원이 없습니다.");
             throw new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다.");
         }
         String password = passwordService.getRandomPassword();
-        Member findMember = memberRepository.findTop1ByLoginId(memberFindPasswordDto.getLoginId()).get();
+        Member findMember = memberRepository.findTop1ByUsername(memberFindPasswordDto.getUsername()).get();
         findMember.changePassword(passwordService.encode(password));
         sendMail(EmailType.PASSWORD, memberFindPasswordDto.getEmail(), password);
     }
 
 
     private boolean validationCheck(MemberSignUpDto memberSignUpDto){
-        return memberRepository.existsByLoginId(memberSignUpDto.getLoginId()) || memberRepository.existsByEmail(memberSignUpDto.getEmail());
+        return memberRepository.existsByUsername(memberSignUpDto.getUsername()) || memberRepository.existsByEmail(memberSignUpDto.getEmail());
     }
 
     private void sendMail(EmailType emailType, String email, String content){

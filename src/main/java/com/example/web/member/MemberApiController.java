@@ -34,8 +34,8 @@ public class MemberApiController {
     }
 
     @PostMapping("/findLoginId")
-    public ResponseEntity findLoginId(@Valid @RequestBody MemberFindLoginIdDto memberFindLoginIdDto){
-        memberService.findLoginId(memberFindLoginIdDto);
+    public ResponseEntity findLoginId(@Valid @RequestBody MemberFindUsernameDto memberFindUsernameDto){
+        memberService.findLoginId(memberFindUsernameDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
