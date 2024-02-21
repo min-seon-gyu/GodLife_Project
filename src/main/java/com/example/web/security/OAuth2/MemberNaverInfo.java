@@ -21,7 +21,7 @@ public class MemberNaverInfo implements OAuth2MemberInfo{
 
     @Override
     public String getProvider() {
-        return "google";
+        return "naver";
     }
 
     @Override

@@ -21,11 +21,11 @@ public class MemberGoogleInfo implements OAuth2MemberInfo{
 
     @Override
     public String getProvider() {
-        return "naver";
+        return "google";
     }
 
     @Override
     public String getProviderId() {
-        return (String) attributes.get("id");
+        return (String) attributes.get("sub");
     }
 }
