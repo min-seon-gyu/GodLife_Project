@@ -9,7 +9,7 @@ import lombok.Data;
 public class MemberSignUpDto {
     @NotBlank(message = "아이디를 입력해주세요")
     @Size(min = 6, max = 12, message = "아이디는 6자 이상 12자 이하여야합니다.")
-    private String loginId;
+    private String username;
     @NotBlank(message = "비밀번호를 입력해주세요")
     @Size(min = 8, max = 12, message = "비밀번호는 8자 이상 12자 이하여야합니다.")
     private String password;
