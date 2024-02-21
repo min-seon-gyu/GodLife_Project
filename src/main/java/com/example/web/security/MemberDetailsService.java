@@ -18,11 +18,10 @@ public class MemberDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username = " + username);
-        Optional<Member> findMember = memberRepository.findTop1ByLoginId(username);
+        Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
         if(findMember.isPresent()){
             Member member = findMember.get();
-            MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(member.getLoginId())
+            MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(member.getUsername())
                     .email(member.getEmail())
                     .password(member.getPassword())
                     .name(member.getName())
@@ -30,7 +29,6 @@ public class MemberDetailsService implements UserDetailsService {
                     .build();
             return new MemberDetails(memberSecurityDto);
         }
-        new RestApiException(ErrorCode.BAD_REQUEST, "해당 유저를 찾을 수 없습니다.");
-        return null;
+        throw new RestApiException(ErrorCode.BAD_REQUEST, "해당 유저를 찾을 수 없습니다.");
     }
 };

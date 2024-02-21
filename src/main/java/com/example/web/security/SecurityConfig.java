@@ -38,7 +38,7 @@ public class SecurityConfig{
                 .httpBasic((basic) -> basic.disable())
                 .authorizeHttpRequests(request -> {
                     //인증이 필요한 요청
-                    request.requestMatchers(HttpMethod.GET,"/createMyPageView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createUpdateView").authenticated();
                     //ADMIN 권한이 필요한 요청
                     //request.requestMatchers("/test").hasAnyAuthority("ADMIN");
                     request.anyRequest().permitAll();
