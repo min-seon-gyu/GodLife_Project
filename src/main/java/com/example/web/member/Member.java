@@ -16,22 +16,25 @@ public class Member extends JpaBaseEntity {
     @Column(name = "MEMBER_ID")
     private Long id;
     @Column(unique = true)
-    private String loginId;
+    private String username;
     private String password;
     private String name;
     @Column(unique = true)
     private String email;
-
     @Enumerated(EnumType.STRING)
     private MemberRole role;
+    private String provider;
+    private String providerId;
 
-    @Builder(access = AccessLevel.PROTECTED)
-    private Member(String loginId, String password, String name, String email, MemberRole role){
-        this.loginId = loginId;
+    @Builder
+    private Member(String username, String password, String name, String email, MemberRole role, String provider, String providerId){
+        this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
     public void changePassword(String password){
