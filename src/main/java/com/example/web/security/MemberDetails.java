@@ -1,15 +1,34 @@
 package com.example.web.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
-@RequiredArgsConstructor
-public class MemberDetails implements UserDetails {
+
+public class MemberDetails implements UserDetails, OAuth2User {
 
     private final MemberSecurityDto member;
+    private Map<String, Object> attributes;
+
+    //일반 로그인
+    public MemberDetails(MemberSecurityDto member) {
+        this.member = member;
+    }
+
+    //OAuth 로그인
+    public MemberDetails(MemberSecurityDto member, Map<String, Object> attributes) {
+        this.member = member;
+        this.attributes = attributes;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -46,5 +65,10 @@ public class MemberDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }
