@@ -1,6 +1,7 @@
 package com.example.web.security;
 
 import com.example.web.security.OAuth2.OAuth2MemberDetailsService;
+import com.example.web.security.OAuth2.SocialClientRegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 public class SecurityConfig{
 
     private final OAuth2MemberDetailsService oAuth2MemberDetailsService;
+    private final SocialClientRegistrationRepository socialClientRegistrationRepository;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -58,6 +60,7 @@ public class SecurityConfig{
                         }))
                 .oauth2Login((oauth2) -> oauth2
                         .loginPage("/")
+                        .clientRegistrationRepository(socialClientRegistrationRepository.clientRegistrationRepository())
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(oAuth2MemberDetailsService))));
         return http.build();
