@@ -50,6 +50,11 @@
             </div>
 
             <div>
+                <label>주소</label>
+                <input type="text" id="address" class="form-control" style="margin-bottom: 10px"/>
+            </div>
+
+            <div>
                 <label>이메일</label>
                 <input type="text" id="email" class="form-control" style="margin-bottom: 10px"/>
             </div>
@@ -70,26 +75,28 @@
         var password = document.getElementById("password").value;
         var passwordCheck = document.getElementById("passwordCheck").value;
         var name = document.getElementById("name").value;
-
-        var formData = {
-            username: username,
-            email: email,
-            password: password,
-            passwordCheck: passwordCheck,
-            name: name
-        };
+        var address = document.getElementById("address").value;
 
         fetch("/member", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password,
+                passwordCheck: passwordCheck,
+                name: name,
+                address: address
+            })
         })
         .then(res => {
-            if(res.status !== 200){
+            if(res.status === 400){
                 alert("입력하신 정보가 올바르지 않습니다.");
-            }else{
+            }else if(res.status === 500){
+                alert("잠시 후 다시 시도해주세요.");
+            }else if(res.status === 200){
                 window.location.href="createSignUpSuccessView"
             }
         });

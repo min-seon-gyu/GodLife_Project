@@ -30,17 +30,7 @@
         </div>
         <div>
             <label>아이디</label>
-            <input type="text" th:value="${member.username}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
-        </div>
-
-        <div>
-            <label>비밀번호</label>
-            <input type="password" id="password" class="form-control" style="margin-bottom: 10px"/>
-        </div>
-
-        <div>
-            <label>비밀번호 확인</label>
-            <input type="password" id="passwordCheck" class="form-control" style="margin-bottom: 10px"/>
+            <input type="text" id="username" th:value="${member.username}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
         </div>
 
         <div>
@@ -49,12 +39,21 @@
         </div>
 
         <div>
+            <label>주소</label>
+            <input type="text" id="address" th:value="${member.address}"class="form-control" style="margin-bottom: 10px"/>
+        </div>
+
+        <div>
             <label>이메일</label>
             <input type="text" th:value="${member.email}" class="form-control" style="margin-bottom: 10px" readonly="true"/>
         </div>
 
         <div>
-            <button class="w-100 btn btn-primary btn-lg" onclick="update()" style="margin-bottom: 10px">수정하기</button>
+            <button class="w-100 btn btn-primary btn-lg" onclick="updateMember()" style="margin-bottom: 10px">수정하기</button>
+        </div>
+
+        <div>
+            <button class="w-100 btn btn-primary btn-lg" onclick="deleteMember()" style="margin-bottom: 10px">탈퇴하기</button>
         </div>
 
         <div>
@@ -63,27 +62,55 @@
     </div>
 </div>
 <script>
-    function update() {
-        var password = document.getElementById("password").value;
-        var passwordCheck = document.getElementById("passwordCheck").value;
-
-        var formData = {
-            password: password,
-            passwordCheck: passwordCheck
-        };
+    function updateMember() {
+        var username = document.getElementById("username").value;
+        var address = document.getElementById("address").value;
 
         fetch("/member", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify({
+                username: username,
+                address: address
+            })
         })
         .then(res => {
-            if(res.status !== 200){
+            if(res.status === 400){
                 alert("입력하신 정보가 올바르지 않습니다.");
-            }else{
+            }else if(res.status === 500{
+                alert("잠시 후 다시 시도해주세요.");
+            }else if(res.status === 200){
                 window.location.href="createUpdateSuccessView"
+            }
+        });
+    }
+
+    function deleteMember() {
+        var username = document.getElementById("username").value;
+        fetch("/member", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: 'username'
+            })
+        })
+        .then(res => {
+            if(res.status === 400){
+                alert("입력하신 정보가 올바르지 않습니다.");
+            }else if(res.status === 500){
+                alert("잠시 후 다시 시도해주세요.");
+            }else if(res.status === 200){
+                fetch("/logout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                    },
+                });
+                window.location.href="createDeleteSuccessView"
             }
         });
     }
