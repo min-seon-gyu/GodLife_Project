@@ -23,39 +23,49 @@ public class ViewController {
     }
 
     @GetMapping("/createSignUpView")
-    public String createSignUpView(){ return "createSignUp"; }
+    public String createSignUpView(){ return "signUp"; }
 
     @GetMapping("/createSignUpSuccessView")
     public String createSignUpSuccessView(){
-        return "createSignUpSuccess";
+        return "signUpSuccess";
     }
 
     @GetMapping("/createFindUsernameView")
     public String createFindLoginIdView(){
-        return "createFindUsername";
+        return "findUsername";
     }
 
     @GetMapping("/createFindUsernameSuccessView")
     public String createFindLoginIdSuccessView(){
-        return "createFindUsernameSuccess";
+        return "findUsernameSuccess";
     }
 
     @GetMapping("/createFindPasswordView")
     public String createFindPasswordFormView(){
-        return "createFindPassword";
+        return "findPassword";
     }
 
     @GetMapping("/createFindPasswordSuccessView")
     public String createFindPasswordSuccessView(){
-        return "createFindPasswordSuccess";
+        return "findPasswordSuccess";
     }
 
-    @GetMapping("/createUpdateSuccessView")
-    public String createUpdateSuccessView(){
-        return "createUpdateSuccess";
+    @GetMapping("/createUpdateMemberSuccessView")
+    public String createUpdateMemberSuccessView(){
+        return "updateMemberSuccess";
     }
-    @GetMapping("/createDeleteSuccessView")
+
+    @GetMapping("/createDeleteMemberSuccessView")
     public String createDeleteSuccessView(){
-        return "createDeleteSuccess";
+        return "deleteMemberSuccess";
+    }
+
+    @GetMapping("/createUpdatePasswordView")
+    public String createUpdatePasswordView(){
+        return "updatePassword";
+    }
+    @GetMapping("/createUpdatePasswordSuccessView")
+    public String createUpdatePasswordSuccessView(){
+        return "updatePasswordSuccess";
     }
 }
