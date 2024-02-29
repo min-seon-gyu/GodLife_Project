@@ -52,6 +52,10 @@
             <button class="w-100 btn btn-primary btn-lg" onclick="updateMember()" style="margin-bottom: 10px">수정하기</button>
         </div>
 
+        <div th:if="${isBasic}">
+            <a href="/createUpdatePasswordView" class="w-100 btn btn-primary btn-lg" role="button" style="margin-bottom: 10px">비밀번호 변경하기</a>
+        </div>
+
         <div>
             <button class="w-100 btn btn-primary btn-lg" onclick="deleteMember()" style="margin-bottom: 10px">탈퇴하기</button>
         </div>
@@ -63,7 +67,6 @@
 </div>
 <script>
     function updateMember() {
-        var username = document.getElementById("username").value;
         var address = document.getElementById("address").value;
 
         fetch("/member", {
@@ -72,17 +75,16 @@
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                username: username,
                 address: address
             })
         })
         .then(res => {
             if(res.status === 400){
                 alert("입력하신 정보가 올바르지 않습니다.");
-            }else if(res.status === 500{
+            }else if(res.status === 500){
                 alert("잠시 후 다시 시도해주세요.");
             }else if(res.status === 200){
-                window.location.href="createUpdateSuccessView"
+                window.location.href="createUpdateMemberSuccessView"
             }
         });
     }
@@ -110,7 +112,7 @@
                     "Content-Type": "application/json"
                     },
                 });
-                window.location.href="createDeleteSuccessView"
+                window.location.href="createDeleteMemberSuccessView"
             }
         });
     }
