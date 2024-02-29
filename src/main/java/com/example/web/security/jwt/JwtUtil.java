@@ -3,7 +3,6 @@ package com.example.web.security.jwt;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +12,7 @@ import java.util.Date;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    private int expiredMs;
+    private final int expiredMs;
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secretKey,
                    @Value("${spring.jwt.EXPIRATION_TIME}") int expiredMs) {

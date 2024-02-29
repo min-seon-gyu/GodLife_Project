@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Data
     public static class MemberLoginDto{
-        private String loginId;
+        private String username;
         private String password;
     }
     private final AuthenticationManager authenticationManager;
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        memberLoginDto.getLoginId(),
+                        memberLoginDto.getUsername(),
                         memberLoginDto.getPassword());
 
         // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의 loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
