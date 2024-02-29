@@ -1,5 +1,6 @@
 package com.example.web.security;
 
+import com.example.web.security.OAuth2.CustomOAuth2AuthorizedClientService;
 import com.example.web.security.OAuth2.OAuth2MemberDetailsService;
 import com.example.web.security.OAuth2.SocialClientRegistrationRepository;
 import lombok.RequiredArgsConstructor;
@@ -7,11 +8,10 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -25,7 +25,8 @@ public class SecurityConfig{
 
     private final OAuth2MemberDetailsService oAuth2MemberDetailsService;
     private final SocialClientRegistrationRepository socialClientRegistrationRepository;
-
+    private final CustomOAuth2AuthorizedClientService CustomOAuth2AuthorizedClientService;
+    private final JdbcTemplate jdbcTemplate;
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -55,12 +56,12 @@ public class SecurityConfig{
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            request.getSession().invalidate();
                             response.sendRedirect("/");
                         }))
                 .oauth2Login((oauth2) -> oauth2
                         .loginPage("/")
                         .clientRegistrationRepository(socialClientRegistrationRepository.clientRegistrationRepository())
+                        .authorizedClientService(CustomOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate, socialClientRegistrationRepository.clientRegistrationRepository()))
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(oAuth2MemberDetailsService))));
         return http.build();
