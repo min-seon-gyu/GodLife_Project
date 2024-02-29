@@ -52,7 +52,6 @@ public class MailService {
                     "<br/><a href='http://localhost:8080/member/" + key +
                     "' target='_blenk'>이메일 인증 확인</a>";
             message.setText(htmlContent, "UTF-8", "html");
-            message.setFrom(new InternetAddress("admin@godLife.com"));
             message.addRecipient(MimeMessage.RecipientType.TO, new InternetAddress(email));
             javaMailSender.send(message);
         }catch (MessagingException e) {
