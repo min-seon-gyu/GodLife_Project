@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class MemberGoogleInfo implements OAuth2MemberInfo{
+public class OAuth2MemberGoogleInfo implements OAuth2MemberInfo{
 
     private final Map<String, Object> attributes;
 
