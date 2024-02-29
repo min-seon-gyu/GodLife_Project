@@ -26,7 +26,6 @@ public class MemberApiController {
 
     //회원가입 요청
     @PostMapping("/member")
-    @ExeTimer
     @ResponseBody
     public ResponseEntity signUp(@Valid @RequestBody MemberSignUpDto memberSignUpDto){
         if(!memberSignUpDto.validPassword()){
@@ -41,17 +40,18 @@ public class MemberApiController {
     @GetMapping("/member/{key}")
     public String signUpConfirm(@PathVariable("key") String key){
         memberService.signUpConfirm(key);
-        return "createSignUpConfirm";
+        return "signUpConfirm";
     }
 
     //회원수정 기본 데이터
-    @GetMapping("/createUpdateView")
+    @GetMapping("/createUpdateMemberView")
     public String createUpdateView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
         Optional<?> findMember = memberDetails.isOAuth2User() ?
                 memberOAuth2Repository.findTop1ByUsername(memberDetails.getUsername()) : memberRepository.findTop1ByUsername(memberDetails.getUsername());
         Object object = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         model.addAttribute("member", object);
-        return "createUpdate";
+        model.addAttribute("isBasic", !memberDetails.isOAuth2User());
+        return "updateMember";
     }
 
     //회원수정 요청
@@ -60,6 +60,18 @@ public class MemberApiController {
     public ResponseEntity update(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @RequestBody MemberUpdateDto memberUpdateDto){
         memberService.update(memberUpdateDto, memberDetails.getUsername(), memberDetails.isOAuth2User());
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    //비밀번호 변경 요청
+    @PatchMapping("/member/password")
+    @ResponseBody
+    public ResponseEntity updatePassword(@AuthenticationPrincipal MemberDetails memberDetails,
+                                         @Valid @RequestBody MemberUpdatePasswordDto memberUpdateDto){
+        if(!memberUpdateDto.validPassword()){
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 맞지 않습니다.");
+        }
+        memberService.updatePassword(memberUpdateDto, memberDetails.getUsername());
         return new ResponseEntity(HttpStatus.OK);
     }
 

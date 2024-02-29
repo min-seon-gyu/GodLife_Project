@@ -66,6 +66,13 @@ public class MemberService {
     }
 
     @Transactional
+    public void updatePassword(MemberUpdatePasswordDto memberUpdatePasswordDto, String username){
+        Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        member.changePassword(passwordService.encode(memberUpdatePasswordDto.getPassword()));
+    }
+
+    @Transactional
     public void delete(String username, boolean isOAuth2User) {
         if(isOAuth2User){
             Optional<MemberOAuth2> findMember = memberOAuth2Repository.findTop1ByUsername(username);
@@ -82,8 +89,7 @@ public class MemberService {
         Optional<Member> findMember = memberRepository.findTop1ByUsernameAndNameAndEmail(memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         String password = passwordService.getRandom();
-        String encodePassword = passwordService.encode(password);
-        member.changePassword(encodePassword);
+        member.changePassword(passwordService.encode(password));
 
         return password;
     }
