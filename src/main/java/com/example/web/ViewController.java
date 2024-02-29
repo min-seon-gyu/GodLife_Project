@@ -1,31 +1,23 @@
 package com.example.web;
 
-import com.example.web.member.Member;
-import com.example.web.member.MemberRepository;
 import com.example.web.security.MemberDetails;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
-
 @Controller
-@RequiredArgsConstructor
 public class ViewController {
-
-    private final MemberRepository memberRepository;
-
     @GetMapping("/")
-    public String Test(@RequestParam(value = "error", required = false)String error,
+    public String mainView(@RequestParam(value = "error", required = false)String error,
                        @AuthenticationPrincipal MemberDetails memberDetails,
                        Model model){
         if(memberDetails == null){
             model.addAttribute("error", error);
             return "index";
         }else{
+            model.addAttribute("name", memberDetails.getName());
             return "main";
         }
     }
@@ -58,18 +50,12 @@ public class ViewController {
         return "createFindPasswordSuccess";
     }
 
-    @GetMapping("/createUpdateView")
-    public String createUpdateView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
-        Optional<Member> findMember = memberRepository.findTop1ByUsername(memberDetails.getUsername());
-        if(findMember.isPresent()){
-            Member member = findMember.get();
-            model.addAttribute("member", member);
-        }
-        return "createUpdate";
-    }
-
     @GetMapping("/createUpdateSuccessView")
     public String createUpdateSuccessView(){
         return "createUpdateSuccess";
+    }
+    @GetMapping("/createDeleteSuccessView")
+    public String createDeleteSuccessView(){
+        return "createDeleteSuccess";
     }
 }
