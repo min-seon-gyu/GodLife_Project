@@ -53,6 +53,11 @@ public class MemberDetails implements UserDetails, OAuth2User {
     }
 
     @Override
+    public String getName() {
+        return member.getName();
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
@@ -70,10 +75,5 @@ public class MemberDetails implements UserDetails, OAuth2User {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public String getName() {
-        return null;
     }
 }
