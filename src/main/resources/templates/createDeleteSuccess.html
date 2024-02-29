@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <link
+          th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css"
+          rel="stylesheet"
+  />
+  <style>
+      .background {
+        width: 100vw;
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        max-width: 600px;
+      }
+    </style>
+</head>
+<body>
+<div class="background">
+  <div class="container">
+    <div class="py-1 text-center">
+      <h2>회원탈퇴를 완료했습니다.</h2>
+    </div>
+
+    <div>
+      <button class="w-100 btn btn-primary btn-lg" type="button" onClick="location.href='/'">메인화면 돌아가기</button>
+    </div>
+  </div>
+</div>
+<!-- /container -->
+</body>
+</html>
