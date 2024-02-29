@@ -14,7 +14,7 @@ public class PasswordService {
     private final int size = 12;
     private final SecureRandom sr = new SecureRandom();
 
-    public String getRandomPassword(){
+    public String getRandom(){
         StringBuffer sb = new StringBuffer();
         for(int i = 0 ; i < size ; i++){
             sb.append(chars.charAt(sr.nextInt(chars.length())));
