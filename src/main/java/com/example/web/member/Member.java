@@ -21,23 +21,25 @@ public class Member extends JpaBaseEntity {
     private String name;
     @Column(unique = true)
     private String email;
+    private String address;
     @Enumerated(EnumType.STRING)
     private MemberRole role;
-    private String provider;
-    private String providerId;
 
     @Builder
-    private Member(String username, String password, String name, String email, MemberRole role, String provider, String providerId){
+    private Member(String username, String password, String name, String email, String address, MemberRole role){
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
+        this.address = address;
         this.role = role;
-        this.provider = provider;
-        this.providerId = providerId;
     }
 
     public void changePassword(String password){
         this.password = password;
+    }
+
+    public void update(MemberUpdateDto memberUpdateDto){
+        this.address = memberUpdateDto.getAddress();
     }
 }

@@ -18,6 +18,8 @@ public class MemberSignUpDto {
     private String passwordCheck;
     @NotBlank(message = "이름을 입력해주세요")
     private String name;
+    @NotBlank(message = "주소를 입력해주세요")
+    private String address;
     @NotBlank(message = "이메일을 입력해주세요")
     @Email(message = "이메일 형식에 맞게 입력해주세요.")
     private String email;
