@@ -11,17 +11,15 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
 
     private final PasswordService passwordService;
-    private final MemberRepository memberRepository;
+    private final MemberOAuth2Repository memberOAuth2Repository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -29,20 +27,14 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         OAuth2MemberInfo oAuth2MemberInfo = null;
+        Map<String, Object> attributes = null;
 
         if(registrationId.equals("naver")){
-            oAuth2MemberInfo = new MemberNaverInfo(oAuth2User.getAttribute("response"));
+            oAuth2MemberInfo = new OAuth2MemberNaverInfo(oAuth2User.getAttribute("response"));
+            attributes = oAuth2User.getAttribute("response");
         }else if(registrationId.equals("google")){
-            Map<String, Object> attributes = oAuth2User.getAttributes();
-            Set<String> strings = attributes.keySet();
-            Iterator<String> iterator = strings.iterator();
-            while(iterator.hasNext()){
-                String key =iterator.next();
-                System.out.println("key = " + key);
-                Object value = attributes.get(key).toString();
-                System.out.println("value = " + value);
-            }
-            oAuth2MemberInfo = new MemberGoogleInfo(oAuth2User.getAttributes());
+            oAuth2MemberInfo = new OAuth2MemberGoogleInfo(oAuth2User.getAttributes());
+            attributes = oAuth2User.getAttributes();
         }
 
         String provider = oAuth2MemberInfo.getProvider(); // google
@@ -52,12 +44,12 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         String username = provider + "_" + providerId;
         String password = passwordService.encode("임시비밀번호");
 
-        Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
-        Member member = null;
+        Optional<MemberOAuth2> findMember = memberOAuth2Repository.findTop1ByUsername(username);
+        MemberOAuth2 memberOAuth2 = null;
         if(findMember.isPresent()){
-            member = findMember.get();
+            memberOAuth2 = findMember.get();
         }else{
-            member = Member.builder()
+            memberOAuth2 = MemberOAuth2.builder()
                     .username(username)
                     .password(password)
                     .email(email)
@@ -66,15 +58,15 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
                     .name(name)
                     .role(MemberRole.USER)
                     .build();
-            memberRepository.save(member);
+            memberOAuth2Repository.save(memberOAuth2);
         }
-        MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(member.getUsername())
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .name(member.getName())
-                .role(member.getRole().name())
+        MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(memberOAuth2.getUsername())
+                .email(memberOAuth2.getEmail())
+                .password(memberOAuth2.getPassword())
+                .name(memberOAuth2.getName())
+                .role(memberOAuth2.getRole().name())
                 .build();
 
-        return new MemberDetails(memberSecurityDto, oAuth2User.getAttributes());
+        return new MemberDetails(memberSecurityDto, attributes);
     }
 }
