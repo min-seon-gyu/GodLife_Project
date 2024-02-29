@@ -12,15 +12,18 @@ import java.util.Map;
 public class MemberDetails implements UserDetails, OAuth2User {
 
     private final MemberSecurityDto member;
+    private final boolean isOAuth2;
     private Map<String, Object> attributes;
 
     //일반 로그인
     public MemberDetails(MemberSecurityDto member) {
+        isOAuth2 = false;
         this.member = member;
     }
 
     //OAuth 로그인
     public MemberDetails(MemberSecurityDto member, Map<String, Object> attributes) {
+        isOAuth2 = true;
         this.member = member;
         this.attributes = attributes;
     }
@@ -29,6 +32,8 @@ public class MemberDetails implements UserDetails, OAuth2User {
     public Map<String, Object> getAttributes() {
         return attributes;
     }
+
+    public boolean isOAuth2User() { return isOAuth2;}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
