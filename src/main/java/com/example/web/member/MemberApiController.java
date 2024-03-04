@@ -1,6 +1,5 @@
 package com.example.web.member;
 
-import com.example.web.common.ExeTimer;
 import com.example.web.common.MailService;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
@@ -67,11 +66,11 @@ public class MemberApiController {
     @PatchMapping("/member/password")
     @ResponseBody
     public ResponseEntity updatePassword(@AuthenticationPrincipal MemberDetails memberDetails,
-                                         @Valid @RequestBody MemberUpdatePasswordDto memberUpdateDto){
-        if(!memberUpdateDto.validPassword()){
+                                         @Valid @RequestBody MemberUpdatePasswordDto memberUpdatePasswordDto){
+        if(!memberUpdatePasswordDto.validPassword()){
             throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 맞지 않습니다.");
         }
-        memberService.updatePassword(memberUpdateDto, memberDetails.getUsername());
+        memberService.updatePassword(memberUpdatePasswordDto, memberDetails.getUsername());
         return new ResponseEntity(HttpStatus.OK);
     }
 
