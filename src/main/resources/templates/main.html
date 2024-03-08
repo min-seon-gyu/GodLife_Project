@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <link
             th:href="@{/css/bootstrap.min.css}"
             href="../css/bootstrap.min.css"
@@ -10,7 +10,6 @@
     <style>
       .background {
         width: 100vw;
-        height: 100vh;
 
         display: flex;
         flex-direction: column;
@@ -18,17 +17,110 @@
         align-items: center;
       }
       .container {
-        max-width: 400px;
+        max-width: 1200px;
       }
+
+
     </style>
 </head>
 <body>
-    <div align="right" style="margin-top: 20px; margin-right: 20px" >
-        <h5 style="display:inline; vertical-align: middle; font-weight : bold;" th:text="|안녕하세요 ${name}님!!|"></h5>
-        <a href="/createUpdateMemberView" class="btn" style="background-color: #adb5bd;" role="button">마이페이지</a>
-        <button class="btn" onclick=logout() style="background-color: #adb5bd;" >로그아웃</button>
+
+<div class="background">
+    <div class="container">
+        <div align="right" style="margin-top: 20px">
+            <h5 style="display:inline; vertical-align: middle; font-weight : bold;" th:text="|안녕하세요 ${name}님!!|"></h5>
+            <a href="/createUpdateMemberView" class="btn btn-secondary" role="button" >마이페이지</a>
+            <button type="button" class="btn btn-secondary" onclick=logout() >로그아웃</button>
+        </div>
+
+        <br>
+
+        <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px;">
+
+        <h2 style="margin-top: 30px; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
+
+        <th:block th:each="schedule : ${schedules}">
+            <div style="margin-top: 20px">
+                <div style="display:inline;">
+                    <h4 th:if="${schedule.status == true}" th:text="|😸 ${schedule.content}|" style="display:inline; vertical-align: middle;" ></h4>
+                    <h4 th:if="${schedule.status == false}" th:text="|😹 ${schedule.content}|" style="display:inline; vertical-align: middle;" ></h4>
+                </div>
+                <div style="margin-top: 10px">
+                    <button th:if="${past == 'false'}" class="change-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">
+                        <p th:if="${schedule.status == true}" style="display:inline;" >미완</p>
+                        <p th:if="${schedule.status == false}" style="display:inline;">완료</p>
+                    </button>
+                    <button th:if="${past == 'false'}" class="update-btn" th:attr="id=${schedule.id}, content=${schedule.content}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">수정</button>
+                    <button th:if="${past == 'false'}" class="delete-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">삭제</button>
+                </div>
+            </div>
+        </th:block>
+
+
+        <button th:if="${past == 'false'}" id="openAddModal" style="font-weight : bold; background: #e3d5ca; border-radius: 15px; margin-top: 30px" >추가하기</button>
+
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <label>일정을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label>
+                <input type="text" id="addContent" style="margin-top: 10px" class="form-control" maxlength="30"
+                       minlength="2">
+                <div align="right" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick=add()>추가</button>
+                    <button type="button" class="btn btn-secondary" id="close-add-btn">닫기</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="updateModal" class="modal">
+            <div class="modal-content">
+                <label>일정을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label>
+                <input type="text" id="updateContent" style="margin-top: 10px" class="form-control" maxlength="30"
+                       minlength="2">
+                <div align="right" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" onclick=update()>수정</button>
+                    <button type="button" class="btn btn-secondary" id="close-update-btn">닫기</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <script>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $('#datePicker')
+        .datepicker({
+            changeYear: true,
+            changeMonth: true,
+            showOtherMonths: true,
+            showButtonPanel: true,
+            dateFormat: 'yy-mm-dd',
+            minDate: '2000-01-01',
+            maxDate: '2099-12-31',
+            yearRange: '2000:2099',
+            closeText: '닫기',
+            currentText: '오늘',
+            prevText: '이전 달',
+            nextText: '다음 달',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            showMonthAfterYear: true,
+            yearSuffix: '년',
+            onSelect: function(dateText, inst) {
+                var day = $(this).val();
+                var year = day.substr(0, 4);
+                var month = day.substr(5, 2);
+                var date = day.substr(8, 2);
+                location.replace(`/schedule/${year}/${month}/${date}`)
+            }
+        });
+
     function logout() {
         fetch("/logout", {
             method: "POST",
@@ -37,8 +129,161 @@
             },
         })
         .then(res => {
-            window.location.href=window.location.href
+            if(res.status === 200){
+               window.location.href=window.location.href
+            }else{
+               alert("잠시 후 다시 시도해주세요.");
+            }
         });
+   }
+
+   function add() {
+       var date = document.getElementById("datePicker").value;
+       var content = document.getElementById("addContent").value;
+       fetch("/schedule", {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                date: date,
+                content: content
+            })
+       })
+       .then(res => {
+           if(res.status === 400){
+               alert("입력하신 데이터가 올바르지 않습니다.");
+           }else if(res.status === 500){
+               alert("잠시 후 다시 시도해주세요.");
+           }else if(res.status === 200){
+               window.location.href=window.location.href
+           }
+       });
+   }
+
+   function update() {
+       var id = document.getElementById("updateContent").getAttribute("content_id");
+       var content = document.getElementById("updateContent").value;
+
+       fetch("/schedule", {
+           method: "PATCH",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                id: id,
+                content: content
+            })
+       })
+       .then(res => {
+           if(res.status === 400){
+               alert("입력하신 데이터가 올바르지 않습니다.");
+           }else if(res.status === 500){
+               alert("잠시 후 다시 시도해주세요.");
+           }else if(res.status === 200){
+               window.location.href=window.location.href
+           }
+       });
+   }
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  var changeButtons = document.querySelectorAll(".change-btn");
+
+  changeButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var id = button.getAttribute("id");
+      fetch("/schedule/changeStatus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: id
+        })
+      })
+      .then(res => {
+        if(res.status === 200){
+          window.location.href=window.location.href
+        }else{
+          alert("잠시 후 다시 시도해주세요.");
+        }
+      });
+    });
+  });
+
+  var deleteButtons = document.querySelectorAll(".delete-btn");
+
+  deleteButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var id = button.getAttribute("id");
+      var date = document.getElementById("datePicker").value;
+      fetch("/schedule", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: id,
+          date: date
+        })
+      })
+      .then(res => {
+        if(res.status === 200){
+          window.location.href=window.location.href
+        }else{
+          alert("잠시 후 다시 시도해주세요.");
+        }
+      });
+    });
+  });
+
+  var updateButtons = document.querySelectorAll(".update-btn");
+
+  updateButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var content = button.getAttribute("content");
+      var id = button.getAttribute("id");
+      var updateContent = document.getElementById("updateContent");
+      updateModal.style.display = "block";
+      updateContent.value = content;
+      updateContent.setAttribute("content_id", id);
+    });
+  });
+});
+
+    var openAddModalBtn = document.getElementById("openAddModal");
+
+    var addModal = document.getElementById("addModal");
+    var updateModal = document.getElementById("updateModal");
+
+    var closeAddModalBtn = document.getElementById("close-add-btn");
+    var closeUpdateModalBtn = document.getElementById("close-update-btn");
+
+    var addContent = document.getElementById("addContent");
+
+
+    openAddModalBtn.onclick = function() {
+        addModal.style.display = "block";
+    }
+
+    closeAddModalBtn.onclick = function() {
+        addModal.style.display = "none";
+        addContent.value = "";
+    }
+
+    closeUpdateModalBtn.onclick = function() {
+        updateModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == addModal) {
+            addModal.style.display = "none";
+            addContent.value = "";
+        }
+        if (event.target == updateModal) {
+            updateModal.style.display = "none";
+        }
     }
 </script>
 </body>

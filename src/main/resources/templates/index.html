@@ -28,46 +28,84 @@
         <div class="py-1 text-center" style="margin-bottom: 10px">
             <h2>갓생 사이트</h2>
         </div>
-        <form method="post" action="/login">
-            <div>
-                <label>아이디</label>
-                <input type="text" id="username" name="username" class="form-control" style="margin-bottom: 10px" />
-            </div>
+
+        <div th:if="${login == 'false'}">
+            <form method="post" action="/login">
+                <div>
+                    <label>아이디</label>
+                    <input type="text" id="username" name="username" class="form-control" style="margin-bottom: 10px" />
+                </div>
+
+                <div>
+                    <label>비밀번호</label>
+                    <input type="password" id="password" name="password" class="form-control" style="margin-bottom: 10px" />
+                </div>
+
+                <p th:if="${error}" style="color:red">아이디 또는 비밀번호가 맞지 않습니다. </p>
+
+                <div>
+                    <button class="w-100 btn btn-primary btn" style="margin-bottom: 10px">로그인</button>
+                </div>
+            </form>
 
             <div>
-                <label>비밀번호</label>
-                <input type="password" id="password" name="password" class="form-control" style="margin-bottom: 10px" />
+                <a href="/oauth2/authorization/naver" class="w-100 btn btn-success btn" style="margin-bottom: 10px" role="button">네이버 로그인</a>
             </div>
-
-            <p th:if="${error}" style="color:red">아이디 또는 비밀번호가 맞지 않습니다. </p>
 
             <div>
-                <button class="w-100 btn btn-primary btn" style="margin-bottom: 10px">로그인</button>
+                <a href="/oauth2/authorization/google" class="w-100 btn btn-secondary btn" style="margin-bottom: 10px" role="button">구글 로그인</a>
             </div>
-        </form>
 
-        <div>
-            <a href="/oauth2/authorization/naver" class="w-100 btn btn-success btn" style="margin-bottom: 10px" role="button">네이버 로그인</a>
+            <hr class="my-4" />
+            <div class="row" style="text-align: center">
+                <div class="col">
+                    <a href="/createSignUpView">회원가입</a>
+                </div>
+                <div class="col">
+                    <a href="/createFindUsernameView" >아이디 찾기</a>
+                </div>
+                <div class="col">
+                    <a href="/createFindPasswordView" >비밀번호 찾기</a>
+                </div>
+            </div>
         </div>
 
-        <div>
-            <a href="/oauth2/authorization/google" class="w-100 btn btn-secondary btn" style="margin-bottom: 10px" role="button">구글 로그인</a>
+        <div th:if="${login == 'true'}">
+            <div>
+                <button class="w-100 btn btn-primary btn" onclick=start() style="margin-bottom: 10px" >서비스 이용</button>
+            </div>
+            <div>
+                <button class="w-100 btn btn-primary btn" onclick=logout() >로그아웃</button>
+            </div>
         </div>
 
-        <hr class="my-4" />
-        <div class="row" style="text-align: center">
-            <div class="col">
-                <a href="/createSignUpView">회원가입</a>
-            </div>
-            <div class="col">
-                <a href="/createFindUsernameView" >아이디 찾기</a>
-            </div>
-            <div class="col">
-                <a href="/createFindPasswordView" >비밀번호 찾기</a>
-            </div>
-        </div>
     </div>
 </div>
 <!-- /container -->
+<script>
+    function logout() {
+        fetch("/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+        .then(res => {
+            if(res.status === 200){
+               window.location.href=window.location.href
+            }else{
+               alert("잠시 후 다시 시도해주세요.");
+            }
+        });
+   }
+
+    function start() {
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        location.replace(`/schedule/${year}/${month}/${day}`)
+    }
+</script>
 </body>
 </html>
