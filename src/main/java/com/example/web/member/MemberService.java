@@ -3,7 +3,7 @@ package com.example.web.member;
 import com.example.web.common.ClassToMapConvert;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
-import com.example.web.redis.RedisUtil;
+import com.example.web.redis.SignUpService;
 import com.example.web.security.PasswordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberOAuth2Repository memberOAuth2Repository;
     private final PasswordService passwordService;
-    private final RedisUtil redisUtil;
+    private final SignUpService signUpService;
 
     public String signUp(MemberSignUpDto memberSignUpDto){
         log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getUsername(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
@@ -31,7 +31,8 @@ public class MemberService {
         try {
             String key = memberSignUpDto.getUsername() + "_" + passwordService.getRandom();
             Map<Object, Object> map = ClassToMapConvert.convert(memberSignUpDto);
-            redisUtil.setData(key, map, 5l);
+            long expiredTime = 5l;
+            signUpService.setData(key, map, expiredTime);
             return key;
         }catch (IllegalAccessException e){
             e.printStackTrace();
@@ -41,7 +42,7 @@ public class MemberService {
 
     @Transactional
     public void signUpConfirm(String key){
-        Map<Object, Object> map = redisUtil.getData(key);
+        Map<Object, Object> map = signUpService.getData(key);
         Member member = Member.builder()
                 .username((String) map.get("username"))
                 .email((String) map.get("email"))
