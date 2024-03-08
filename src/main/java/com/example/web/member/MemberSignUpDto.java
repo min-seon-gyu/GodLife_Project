@@ -1,5 +1,7 @@
 package com.example.web.member;
 
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,7 +26,7 @@ public class MemberSignUpDto {
     @Email(message = "이메일 형식에 맞게 입력해주세요.")
     private String email;
 
-    public boolean validPassword(){
-        return this.password.equals(this.passwordCheck);
+    public void validPassword(){
+        if(!this.password.equals(this.passwordCheck)) throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 맞지 않습니다.");
     }
 }
