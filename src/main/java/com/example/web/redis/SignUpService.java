@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class RedisUtil {
+public class SignUpService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     public void setData(String key, Map<Object, Object> map, Long expiredTime){
