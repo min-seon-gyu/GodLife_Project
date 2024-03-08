@@ -41,7 +41,12 @@ public class SecurityConfig{
                 .httpBasic((basic) -> basic.disable())
                 .authorizeHttpRequests(request -> {
                     //인증이 필요한 요청
-                    request.requestMatchers(HttpMethod.GET,"/createUpdateView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createDeleteMemberSuccessView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createUpdateMemberSuccessView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createUpdateMemberView.").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createUpdatePasswordView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/createUpdatePasswordSuccessView").authenticated();
+                    request.requestMatchers(HttpMethod.GET,"/schedule/**").authenticated();
                     //ADMIN 권한이 필요한 요청
                     //request.requestMatchers("/test").hasAnyAuthority("ADMIN");
                     request.anyRequest().permitAll();
@@ -60,6 +65,7 @@ public class SecurityConfig{
                         }))
                 .oauth2Login((oauth2) -> oauth2
                         .loginPage("/")
+                        .defaultSuccessUrl("/")
                         .clientRegistrationRepository(socialClientRegistrationRepository.clientRegistrationRepository())
                         .authorizedClientService(CustomOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate, socialClientRegistrationRepository.clientRegistrationRepository()))
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
