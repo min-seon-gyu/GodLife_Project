@@ -44,11 +44,11 @@ public class AopService {
     public Object redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
-        RedisRock redisRock = method.getAnnotation(RedisRock.class);
+        RedissonRock redissonRock = method.getAnnotation(RedissonRock.class);
         RLock rLock = redissonClient.getLock(REDISSON_LOCK);
 
         try {
-            boolean available = rLock.tryLock(redisRock.waitTime(), redisRock.leaseTime(), redisRock.timeUnit());
+            boolean available = rLock.tryLock(redissonRock.waitTime(), redissonRock.leaseTime(), redissonRock.timeUnit());
             if (!available) {
                 return false;
             }

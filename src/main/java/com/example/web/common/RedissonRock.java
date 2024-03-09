@@ -10,7 +10,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RedisRock {
+public @interface RedissonRock {
     TimeUnit timeUnit() default SECONDS;
     long waitTime() default 5L;
     long leaseTime() default 10L;

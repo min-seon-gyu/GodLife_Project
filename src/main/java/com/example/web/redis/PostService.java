@@ -1,6 +1,6 @@
 package com.example.web.redis;
 
-import com.example.web.common.RedisRock;
+import com.example.web.common.RedissonRock;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import com.example.web.schedule.ScheduleRepository;
@@ -22,7 +22,7 @@ public class PostService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    @RedisRock
+    @RedissonRock
     public void decreaseWriteCount(String key) {
         Long remainingWrites = getCount(key);
         if(remainingWrites == null){
@@ -43,7 +43,7 @@ public class PostService {
     }
 
     @Transactional
-    @RedisRock
+    @RedissonRock
     public void incrementWriteCount(String key) {
         Long remainingWrites = getCount(key);
         if (remainingWrites != null && remainingWrites < MAX_VALUE) {
@@ -52,7 +52,7 @@ public class PostService {
     }
 
     @Transactional
-    @RedisRock
+    @RedissonRock
     public Long getCount(String key) {
         return redisTemplate.opsForValue().get(key);
     }
