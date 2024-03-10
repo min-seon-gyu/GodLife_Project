@@ -69,13 +69,15 @@
     }
 ```
 
-OAuth2에 대한 학습한 내용을 정리한 글은 개발 블로그에 작성하였습니다. 
-https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-OAuth
+OAuth2에 대한 학습한 내용을 정리한 글은 개발 블로그에 작성하였습니다.
+
+[OAuth2 정리글](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-OAuth)
 
 - ### CI/CD
 
-예전 프로젝트를 진행하면서 반복적인 서버 배포 과정을 개선하기 위해 CI/CD를 구현하고 적용해보았습니다. 해당 내용이 매우 길기 때문에 당시 블로그에 정리한 글로 대체하겠습니다. 
-https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-CICD
+예전 프로젝트를 진행하면서 반복적인 서버 배포 과정을 개선하기 위해 CI/CD를 구현하고 적용해보았습니다. 해당 내용이 매우 길기 때문에 당시 블로그에 정리한 글로 대체하겠습니다.
+
+[CI/CD 정리글]([https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-OAuth](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-CICD)https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-CICD)
 
 - ### Redisson
 - 
