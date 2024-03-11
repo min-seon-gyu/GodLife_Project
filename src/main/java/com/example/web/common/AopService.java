@@ -1,5 +1,7 @@
 package com.example.web.common;
 
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -40,8 +42,8 @@ public class AopService {
         log.info("실행 메서드: {}, 실행시간 = {}ms", methodName, totalTimeMillis);
     }
 
-    @Around("@annotation(com.example.web.common.RedisRock)")
-    public Object redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(com.example.web.common.RedissonRock)")
+    public void redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RedissonRock redissonRock = method.getAnnotation(RedissonRock.class);
@@ -50,9 +52,9 @@ public class AopService {
         try {
             boolean available = rLock.tryLock(redissonRock.waitTime(), redissonRock.leaseTime(), redissonRock.timeUnit());
             if (!available) {
-                return false;
+                throw new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR, "락을 획득하지 못했습니다.");
             }
-            return aopForTransaction.proceed(joinPoint);
+            aopForTransaction.proceed(joinPoint);
         } catch (InterruptedException  e) {
             throw new InterruptedException();
         } finally {
