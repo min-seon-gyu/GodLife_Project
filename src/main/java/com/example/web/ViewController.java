@@ -5,6 +5,7 @@ import com.example.web.exception.RestApiException;
 import com.example.web.member.MemberOAuth2Repository;
 import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
+import com.example.web.redis.SignUpService;
 import com.example.web.schedule.Schedule;
 import com.example.web.schedule.ScheduleRepository;
 import com.example.web.security.MemberDetails;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class ViewController {
 
     private final MemberService memberService;
+    private final SignUpService signUpService;
     private final MemberRepository memberRepository;
     private final MemberOAuth2Repository memberOAuth2Repository;
     private final ScheduleRepository scheduleRepository;
@@ -118,7 +121,8 @@ public class ViewController {
     //회원가입 인증 요청
     @GetMapping("/member/{key}")
     public String signUpConfirm(@PathVariable("key") String key){
-        memberService.signUpConfirm(key);
+        Map<Object, Object> data = signUpService.getData(key);
+        memberService.signUpConfirm(data);
         return "signUpConfirm";
     }
 
