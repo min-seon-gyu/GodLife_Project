@@ -20,7 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberOAuth2Repository memberOAuth2Repository;
     private final PasswordService passwordService;
-    private final SignUpService signUpService;
+    private final String SIGN_KEY = "SIGN_KEY_";
 
     public String signUp(MemberSignUpDto memberSignUpDto){
         log.info("회원가입 요청 - id : {}, name : {}, email : {}", memberSignUpDto.getUsername(), memberSignUpDto.getName(), memberSignUpDto.getEmail());
@@ -28,26 +28,16 @@ public class MemberService {
             log.info("회원가입 요청 실패- id : {}, name : {}, email : {}, {}", memberSignUpDto.getUsername(), memberSignUpDto.getName(), memberSignUpDto.getEmail(), "이미 회원가입 했습니다.");
             throw new RestApiException(ErrorCode.BAD_REQUEST, "이미 가입된 회원정보입니다.");
         }
-        try {
-            String key = memberSignUpDto.getUsername() + "_" + passwordService.getRandom();
-            Map<Object, Object> map = ClassToMapConvert.convert(memberSignUpDto);
-            long expiredTime = 5l;
-            signUpService.setData(key, map, expiredTime);
-            return key;
-        }catch (IllegalAccessException e){
-            e.printStackTrace();
-            throw new RestApiException(ErrorCode.BAD_REQUEST, "다시 한번 시도해주세요");
-        }
+        return SIGN_KEY + memberSignUpDto.getEmail() + "_" + memberSignUpDto.getEmail().hashCode();
     }
 
     @Transactional
-    public void signUpConfirm(String key){
-        Map<Object, Object> map = signUpService.getData(key);
+    public void signUpConfirm(Map<Object, Object> data){
         Member member = Member.builder()
-                .username((String) map.get("username"))
-                .email((String) map.get("email"))
-                .name((String) map.get("name"))
-                .password(passwordService.encode((String) map.get("password")))
+                .username((String) data.get("username"))
+                .email((String) data.get("email"))
+                .name((String) data.get("name"))
+                .password(passwordService.encode((String) data.get("password")))
                 .role(MemberRole.USER)
                 .build();
         memberRepository.save(member);

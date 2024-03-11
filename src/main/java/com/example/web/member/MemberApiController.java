@@ -3,6 +3,7 @@ package com.example.web.member;
 import com.example.web.common.MailService;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
+import com.example.web.redis.SignUpService;
 import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @RestController
 public class MemberApiController {
     private final MemberService memberService;
+    private final SignUpService signUpService;
     private final MemberRepository memberRepository;
     private final MailService mailService;
 
@@ -25,6 +27,7 @@ public class MemberApiController {
     public ResponseEntity signUp(@Valid @RequestBody MemberSignUpDto memberSignUpDto){
         memberSignUpDto.validPassword();
         String key = memberService.signUp(memberSignUpDto);
+        signUpService.setData(key, memberSignUpDto);
         new Thread(() -> mailService.signUp(memberSignUpDto.getEmail(), key)).start();
         return new ResponseEntity(HttpStatus.OK);
     }
