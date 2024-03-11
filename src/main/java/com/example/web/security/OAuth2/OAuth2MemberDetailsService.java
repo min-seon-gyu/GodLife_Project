@@ -42,7 +42,7 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         String email = oAuth2MemberInfo.getEmail();
         String name = oAuth2MemberInfo.getName();
         String username = provider + "_" + providerId;
-        String password = passwordService.encode("임시비밀번호");
+        String password = passwordService.encode(passwordService.getRandom());
 
         Optional<MemberOAuth2> findMember = memberOAuth2Repository.findTop1ByUsername(username);
         MemberOAuth2 memberOAuth2 = null;
