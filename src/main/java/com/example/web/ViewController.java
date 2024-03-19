@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -142,9 +141,18 @@ public class ViewController {
             return false;
         }
 
-        int year = Integer.parseInt(y);
-        int month = Integer.parseInt(m);
-        int day = Integer.parseInt(d);
+        int year = 0;
+        int month = 0;
+        int day = 0;
+
+        try{
+            year = Integer.parseInt(y);
+            month = Integer.parseInt(m);
+            day = Integer.parseInt(d);
+        }catch(NumberFormatException e){
+            e.printStackTrace();
+            return false;
+        }
 
         if(year < 2000 || year > 2099) return false;
         switch (month){
