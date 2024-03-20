@@ -2,6 +2,8 @@ package com.example.web.schedule;
 
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
+import com.example.web.member.Member;
+import com.example.web.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +16,16 @@ import java.util.Optional;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long post(String username, ScheduleAddDto scheduleAddDto) {
+    public Long post(Long id, ScheduleAddDto scheduleAddDto) {
+        Optional<Member> findMember = memberRepository.findById(id);
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         Schedule schedule = Schedule.builder()
-                .username(username)
+                .member(member)
                 .content(scheduleAddDto.getContent())
-                .localDate(LocalDate.parse(scheduleAddDto.getDate()))
+                .localDate(scheduleAddDto.getDate())
                 .build();
         return scheduleRepository.save(schedule).getId();
     }
