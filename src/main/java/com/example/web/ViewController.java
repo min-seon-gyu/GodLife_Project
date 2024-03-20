@@ -2,7 +2,7 @@ package com.example.web;
 
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
-import com.example.web.member.MemberOAuth2Repository;
+import com.example.web.member.Member;
 import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
 import com.example.web.redis.SignUpService;
@@ -10,12 +10,13 @@ import com.example.web.schedule.Schedule;
 import com.example.web.schedule.ScheduleRepository;
 import com.example.web.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +32,6 @@ public class ViewController {
     private final MemberService memberService;
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
-    private final MemberOAuth2Repository memberOAuth2Repository;
     private final ScheduleRepository scheduleRepository;
 
     @GetMapping("/")
@@ -55,7 +55,7 @@ public class ViewController {
             }else{
                 model.addAttribute("past", "false");
             }
-            List<Schedule> schedules = scheduleRepository.findByUsernameAndLocalDate(memberDetails.getUsername(), LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day)));
+            List<Schedule> schedules = scheduleRepository.findByMemberIdAndLocalDate(memberDetails.getId(), LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day)));
 
             StringBuilder sb = new StringBuilder();
             sb.append(year).append("-").append(month).append("-").append(day);
@@ -67,6 +67,17 @@ public class ViewController {
         }else{
             return "redirect:/schedule/" + getToday();
         }
+    }
+
+    @PostMapping("/schedule1")
+    @ResponseBody
+    public Slice<Schedule> find(@AuthenticationPrincipal MemberDetails memberDetails,
+                               @RequestBody String content,
+                               Pageable pageable){
+        JSONObject jsonObject = new JSONObject(content);
+        //Slice<Schedule> content1 = scheduleRepository.findByMemberIdAndContent(pageable, 1l, jsonObject.getString("content"));
+        //return content1;
+        return null;
     }
 
     @GetMapping("/createSignUpView")
@@ -128,11 +139,10 @@ public class ViewController {
     //회원수정 기본 데이터
     @GetMapping("/createUpdateMemberView")
     public String createUpdateView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
-        Optional<?> findMember = memberDetails.isOAuth2User() ?
-                memberOAuth2Repository.findTop1ByUsername(memberDetails.getUsername()) : memberRepository.findTop1ByUsername(memberDetails.getUsername());
-        Object object = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
-        model.addAttribute("member", object);
-        model.addAttribute("isBasic", !memberDetails.isOAuth2User());
+        Optional<Member> findMember = memberRepository.findTop1ByUsername(memberDetails.getUsername());
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        model.addAttribute("member", member);
+        model.addAttribute("isBasic", !memberDetails.isOAuth());
         return "updateMember";
     }
 
