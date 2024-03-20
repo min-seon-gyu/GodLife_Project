@@ -5,6 +5,7 @@ import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,13 +17,13 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final PostService postService;
+    private final ScheduleRepository scheduleRepository;
 
     @PostMapping("/schedule")
     public ResponseEntity add(@AuthenticationPrincipal MemberDetails memberDetails,
                                @Valid @RequestBody ScheduleAddDto scheduleAddDto){
-        String key = scheduleAddDto.getDate()+ "_" + memberDetails.getUsername();
-        postService.decreaseWriteCount(key);
-        scheduleService.post(memberDetails.getUsername(), scheduleAddDto);
+        postService.decreaseWriteCount(scheduleAddDto.getDate()+ "_" + memberDetails.getId());
+        scheduleService.post(memberDetails.getId(), scheduleAddDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -42,7 +43,7 @@ public class ScheduleController {
     @DeleteMapping("/schedule")
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @RequestBody ScheduleDeleteDto scheduleDeleteDto){
-        postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getUsername());
+        postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getId());
         scheduleService.delete(scheduleDeleteDto.getId());
         return new ResponseEntity(HttpStatus.OK);
     }
