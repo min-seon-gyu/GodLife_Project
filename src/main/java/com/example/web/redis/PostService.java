@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -28,8 +29,8 @@ public class PostService {
         if(remainingWrites == null){
             ValueOperations<String, Long> stringIntegerValueOperations = redisTemplate.opsForValue();
             LocalDate localDate = LocalDate.parse(key.substring(0, key.indexOf("_")));
-            String username = key.substring(key.indexOf("_") + 1);
-            Long count = scheduleRepository.countByUsernameAndLocalDate(username, localDate);
+            Long id = Long.parseLong(key.substring(key.indexOf("_") + 1));
+            Long count = scheduleRepository.countByMemberIdAndLocalDate(id, localDate);
             remainingWrites = MAX_VALUE - count;
             stringIntegerValueOperations.set(key, remainingWrites);
             redisTemplate.expire(key, 60, TimeUnit.MINUTES);
