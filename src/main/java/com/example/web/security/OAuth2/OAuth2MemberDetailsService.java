@@ -19,7 +19,7 @@ import java.util.Optional;
 public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
 
     private final PasswordService passwordService;
-    private final MemberOAuth2Repository memberOAuth2Repository;
+    private final MemberRepository memberRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -44,29 +44,33 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         String username = provider + "_" + providerId;
         String password = passwordService.encode(passwordService.getRandom());
 
-        Optional<MemberOAuth2> findMember = memberOAuth2Repository.findTop1ByUsername(username);
-        MemberOAuth2 memberOAuth2 = null;
-        if(findMember.isPresent()){
-            memberOAuth2 = findMember.get();
-        }else{
-            memberOAuth2 = MemberOAuth2.builder()
-                    .username(username)
-                    .password(password)
-                    .email(email)
-                    .provider(provider)
-                    .providerId(providerId)
-                    .name(name)
-                    .role(MemberRole.USER)
-                    .build();
-            memberOAuth2Repository.save(memberOAuth2);
-        }
-        MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(memberOAuth2.getUsername())
-                .email(memberOAuth2.getEmail())
-                .password(memberOAuth2.getPassword())
-                .name(memberOAuth2.getName())
-                .role(memberOAuth2.getRole().name())
+        Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
+        Member member = findMember.orElseGet(() -> buildMember(username, password, email, provider, providerId, name));
+
+        MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .name(member.getName())
+                .role(member.getRole().name())
                 .build();
 
         return new MemberDetails(memberSecurityDto, attributes);
+    }
+
+    private Member buildMember(String username, String password, String email, String provider, String providerId, String name){
+        Member member = Member.builder()
+                .username(username)
+                .password(password)
+                .email(email)
+                .provider(provider)
+                .providerId(providerId)
+                .name(name)
+                .role(MemberRole.USER)
+                .isOAuth(true)
+                .build();
+        memberRepository.save(member);
+        return member;
     }
 }
