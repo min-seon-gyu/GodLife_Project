@@ -19,16 +19,15 @@ public class MemberDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
-        if(findMember.isPresent()){
-            Member member = findMember.get();
-            MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder().username(member.getUsername())
-                    .email(member.getEmail())
-                    .password(member.getPassword())
-                    .name(member.getName())
-                    .role(member.getRole().name())
-                    .build();
-            return new MemberDetails(memberSecurityDto);
-        }
-        throw new RestApiException(ErrorCode.BAD_REQUEST, "해당 유저를 찾을 수 없습니다.");
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당 유저를 찾을 수 없습니다."));
+        MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .name(member.getName())
+                .role(member.getRole().name())
+                .build();
+        return new MemberDetails(memberSecurityDto);
     }
-};
+}

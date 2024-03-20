@@ -33,7 +33,7 @@ public class MemberDetails implements UserDetails, OAuth2User {
         return attributes;
     }
 
-    public boolean isOAuth2User() { return isOAuth2;}
+    public boolean isOAuth() { return isOAuth2;}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -41,37 +41,31 @@ public class MemberDetails implements UserDetails, OAuth2User {
         collections.add(() -> member.getRole());
         return collections;
     }
-
     @Override
     public String getPassword() {
         return member.getPassword();
     }
-
     @Override
     public String getUsername() {
         return member.getUsername();
     }
-
     @Override
     public String getName() {
         return member.getName();
     }
-
+    public Long getId() { return member.getId(); }
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     @Override
     public boolean isEnabled() {
         return true;
