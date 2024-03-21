@@ -5,7 +5,6 @@ import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +16,6 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final PostService postService;
-    private final ScheduleRepository scheduleRepository;
 
     @PostMapping("/schedule")
     public ResponseEntity add(@AuthenticationPrincipal MemberDetails memberDetails,

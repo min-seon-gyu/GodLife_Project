@@ -18,5 +18,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Long countByMemberIdAndLocalDate(@Param("id") Long id, @Param("localDate") LocalDate localDate);
 
     @Query("select s from Schedule s join fetch s.member m where m.id = :id and s.content like %:content% order by s.localDate")
-    Slice<Schedule> findByMemberIdAndContent(Pageable pageable, @Param("id") Long memberId, @Param("content") String content);
+    Slice<Schedule> findByMemberIdAndContent(Pageable pageable, @Param("id") Long id, @Param("content") String content);
 }
