@@ -59,7 +59,7 @@ public class AopService {
             throw new InterruptedException();
         } finally {
             try{
-                rLock.unlock();
+                if(rLock.isLocked()) rLock.unlock();
             }catch(Exception e){
                 e.printStackTrace();
             }
