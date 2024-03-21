@@ -47,7 +47,18 @@ public class PostService {
     @RedissonRock
     public void incrementWriteCount(String key) {
         Long remainingWrites = getCount(key);
-        if (remainingWrites != null && remainingWrites < MAX_VALUE) {
+        if(remainingWrites == null){
+            ValueOperations<String, Long> stringIntegerValueOperations = redisTemplate.opsForValue();
+            LocalDate localDate = LocalDate.parse(key.substring(0, key.indexOf("_")));
+            Long id = Long.parseLong(key.substring(key.indexOf("_") + 1));
+            Long count = scheduleRepository.countByMemberIdAndLocalDate(id, localDate);
+            remainingWrites = MAX_VALUE - count;
+            if(remainingWrites < MAX_VALUE){
+                remainingWrites += 1;
+            }
+            stringIntegerValueOperations.set(key, remainingWrites);
+            redisTemplate.expire(key, 60, TimeUnit.MINUTES);
+        }else if(remainingWrites < MAX_VALUE){
             redisTemplate.opsForValue().increment(key);
         }
     }
