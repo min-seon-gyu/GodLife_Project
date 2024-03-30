@@ -10,13 +10,12 @@ import com.example.web.schedule.Schedule;
 import com.example.web.schedule.ScheduleRepository;
 import com.example.web.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,7 +42,6 @@ public class ViewController {
         return "index";
     }
 
-
     @GetMapping(value = {"/schedule/**", "/schedule/{year}/{month}/{day}"})
     public String schedule(@AuthenticationPrincipal MemberDetails memberDetails, Model model,
                        @PathVariable(value = "year", required = false) String year,
@@ -67,17 +65,6 @@ public class ViewController {
         }else{
             return "redirect:/schedule/" + getToday();
         }
-    }
-
-    @PostMapping("/schedule1")
-    @ResponseBody
-    public Slice<Schedule> find(@AuthenticationPrincipal MemberDetails memberDetails,
-                               @RequestBody String content,
-                               Pageable pageable){
-        JSONObject jsonObject = new JSONObject(content);
-        //Slice<Schedule> content1 = scheduleRepository.findByMemberIdAndContent(pageable, 1l, jsonObject.getString("content"));
-        //return content1;
-        return null;
     }
 
     @GetMapping("/createSignUpView")
