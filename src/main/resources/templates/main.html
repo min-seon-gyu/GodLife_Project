@@ -33,12 +33,8 @@
             <button type="button" class="btn btn-secondary" onclick=logout() >로그아웃</button>
         </div>
 
-        <br>
-
-        <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px;">
-
+        <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px; display:inline;">
         <h2 style="margin-top: 30px; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
-
         <th:block th:each="schedule : ${schedules}">
             <div style="margin-top: 20px">
                 <div style="display:inline;">
@@ -55,9 +51,17 @@
                 </div>
             </div>
         </th:block>
-
-
         <button th:if="${past == 'false'}" id="openAddModal" style="font-weight : bold; background: #e3d5ca; border-radius: 15px; margin-top: 30px" >추가하기</button>
+
+        <br>
+
+        <div style="margin-top: 20px">
+            <label>검색할 일정을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label><br>
+            <input type="search" id="findContent" maxlength="30" minlength="2" style="vertical-align: middle;">
+            <button type="button" id="openFindModal" class="btn btn-secondary" style="vertical-align: middle;">검색</button>
+        </div>
+
+        <!--Modal-->
 
         <div id="addModal" class="modal">
             <div class="modal-content">
@@ -82,6 +86,20 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div id="findModal" class="modal">
+            <div class="modal-content">
+                <h3 id="subtitle"></h3>
+                <div style="overflow:auto; height: 300px;" id="modalData"></div>
+                <button style="display: none" type="button" class="btn btn-secondary" id="more-find-btn" onclick="more()">더보기</button>
+                <div align="right" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="close-find-btn">닫기</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -137,9 +155,12 @@
         });
    }
 
+   <!--일정을 추가하는 함수-->
    function add() {
+       <!--일정을 추가할 때 필요한 날짜와 내용을 가져온다.-->
        var date = document.getElementById("datePicker").value;
        var content = document.getElementById("addContent").value;
+       <!--POST 요청으로 전송-->
        fetch("/schedule", {
            method: "POST",
            headers: {
@@ -152,19 +173,23 @@
        })
        .then(res => {
            if(res.status === 400){
+           console.log(res);
                alert("입력하신 데이터가 올바르지 않습니다.");
            }else if(res.status === 500){
                alert("잠시 후 다시 시도해주세요.");
            }else if(res.status === 200){
+               <!--일정 추가 성공 시 새로고침-->
                window.location.href=window.location.href
            }
        });
    }
 
+   <!--일정을 수정하는 함수-->
    function update() {
+       <!--일정을 수정할 때 필요한 아이디와 내용을 가져온다.-->
        var id = document.getElementById("updateContent").getAttribute("content_id");
        var content = document.getElementById("updateContent").value;
-
+       <!--FETCH 요청으로 전송-->
        fetch("/schedule", {
            method: "PATCH",
            headers: {
@@ -181,7 +206,52 @@
            }else if(res.status === 500){
                alert("잠시 후 다시 시도해주세요.");
            }else if(res.status === 200){
+               <!--일정 수정 성공 시 새로고침-->
                window.location.href=window.location.href
+           }
+       });
+   }
+
+   <!--일정을 추가 검색하는 함수-->
+   function more() {
+       <!--일정을 추가 검색할 때 필요한 내용과 버튼, 인덱스를 가져온다.-->
+       var content = document.getElementById("findContent").value;
+       var btn = document.getElementById("more-find-btn");
+       <!--GET 요청으로 전송-->
+       fetch(`/search_schedule/${content}/${btn.getAttribute("index")}`, {
+           method: "GET"
+       })
+       .then(res => {
+           if(res.status === 400){
+               alert("입력하신 데이터가 올바르지 않습니다.");
+           }else if(res.status === 500){
+               alert("잠시 후 다시 시도해주세요.");
+           }else if(res.status === 200){
+               <!--Promise 반환-->
+               return res.json();
+           }
+       })
+       .then(data => {
+           <!--기존 테이블 가져오기-->
+           const table = document.getElementById('modalData').querySelector('table');
+           <!--테이블에 행 추가하기-->
+           data.lst.forEach(item => {
+               const row = table.insertRow();
+               Object.values(item).forEach(value => {
+                   const cell = row.insertCell();
+                   cell.textContent = value;
+                   cell.style.width = '33.33%'
+               });
+           });
+
+           <!--다음 데이터가 존재하면 '더보기' 버튼 보이게 설정하고 다음 인덱스도 설정-->
+           if(data.hasNext){
+               btn.style.display = "block";
+               btn.setAttribute("index", data.nextIndex);
+           }
+           <!--다음 데이터가 존재하지 않으면 '더보기' 버튼 안보이게 설정-->
+           else{
+               btn.style.display = "none";
            }
        });
    }
@@ -252,19 +322,16 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
+    // 일정 추가 Modal
     var openAddModalBtn = document.getElementById("openAddModal");
-
-    var addModal = document.getElementById("addModal");
-    var updateModal = document.getElementById("updateModal");
-
     var closeAddModalBtn = document.getElementById("close-add-btn");
-    var closeUpdateModalBtn = document.getElementById("close-update-btn");
-
+    var addModal = document.getElementById("addModal");
     var addContent = document.getElementById("addContent");
 
-
-    openAddModalBtn.onclick = function() {
-        addModal.style.display = "block";
+    if(openAddModalBtn !== null){
+        openAddModalBtn.onclick = function() {
+            addModal.style.display = "block";
+        }
     }
 
     closeAddModalBtn.onclick = function() {
@@ -272,10 +339,77 @@ document.addEventListener("DOMContentLoaded", function() {
         addContent.value = "";
     }
 
+    // 일정 수정 Modal
+    var closeUpdateModalBtn = document.getElementById("close-update-btn");
+    var updateModal = document.getElementById("updateModal");
+
     closeUpdateModalBtn.onclick = function() {
         updateModal.style.display = "none";
     }
 
+    // 일정 검색 Modal
+    var openFindModalBtn = document.getElementById("openFindModal");
+    var closeFindModalBtn = document.getElementById("close-find-btn");
+    var findModal = document.getElementById("findModal");
+
+    openFindModalBtn.onclick = function() {
+       var content = document.getElementById("findContent").value;
+       fetch(`/search_schedule/${content}/0`, {
+           method: "GET"
+       })
+       .then(res => {
+           if(res.status === 400){
+               alert("입력하신 데이터가 올바르지 않습니다.");
+           }else if(res.status === 500){
+               alert("잠시 후 다시 시도해주세요.");
+           }else if(res.status === 200){
+               return res.json();
+           }
+       })
+       .then(data => {
+           document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
+           var btn = document.getElementById("more-find-btn");
+
+           const table = document.createElement('table');
+           table.style.width = '100%';
+           const headerRow = table.insertRow();
+           const headers = ['일정', '내용', '완료']; // 임의의 헤더 추가
+           headers.forEach(headerText => {
+               const th = document.createElement('th');
+               th.textContent = headerText;
+               th.style.width = '33.33%'
+               headerRow.appendChild(th);
+           });
+
+           data.lst.forEach(item => {
+               const row = table.insertRow();
+               Object.values(item).forEach(value => {
+                   const cell = row.insertCell();
+                   cell.textContent = value;
+                   cell.style.width = '33.33%'
+               });
+           });
+
+           if(data.hasNext){
+               btn.style.display = "block";
+               btn.setAttribute("index", data.nextIndex);
+           }
+           else{
+                btn.style.display = "none";
+           }
+
+           const modalDataContainer = document.getElementById('modalData');
+           modalDataContainer.innerHTML = ''; // 모달 내용 초기화
+           modalDataContainer.appendChild(table);
+           findModal.style.display = "block";
+       });
+    }
+
+    closeFindModalBtn.onclick = function() {
+        findModal.style.display = "none";
+    }
+
+    // 공통
     window.onclick = function(event) {
         if (event.target == addModal) {
             addModal.style.display = "none";
@@ -283,6 +417,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         if (event.target == updateModal) {
             updateModal.style.display = "none";
+        }
+        if (event.target == findModal) {
+            findModal.style.display = "none";
         }
     }
 </script>
