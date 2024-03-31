@@ -21,6 +21,8 @@ public class ScheduleDocument {
     private Long memberId;
     @Field(name = "content", type = FieldType.Text)
     private String content;
+    @Field(name = "status", type = FieldType.Boolean)
+    private Boolean status;
     @Field(name = "local_date", type = FieldType.Date)
     @Temporal(TemporalType.DATE)
     private LocalDate localDate;
