@@ -1,5 +1,6 @@
 package com.example.web.es;
 
+import lombok.Builder;
 import lombok.Data;
 import java.util.List;
 
@@ -7,8 +8,11 @@ import java.util.List;
 public class ScheduleDocumentPaging {
     private List<ScheduleDocumentResponse> lst;
     private boolean hasNext;
-    private int currentIndex;
-    public ScheduleDocumentPaging(List<ScheduleDocumentResponse> lst){
+    private int nextIndex;
+    @Builder
+    public ScheduleDocumentPaging(List<ScheduleDocumentResponse> lst, boolean hasNext, int nextIndex) {
         this.lst = lst;
+        this.hasNext = hasNext;
+        this.nextIndex = nextIndex;
     }
 }
