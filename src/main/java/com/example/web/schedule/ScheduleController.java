@@ -4,6 +4,8 @@ import com.example.web.es.ScheduleDocument;
 import com.example.web.es.ScheduleDocumentPaging;
 import com.example.web.es.ScheduleDocumentRepository;
 import com.example.web.es.ScheduleDocumentResponse;
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import com.example.web.redis.PostService;
 import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,6 +58,9 @@ public class ScheduleController {
                                  @RequestBody ScheduleDeleteDto scheduleDeleteDto){
         postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getId());
         scheduleService.delete(scheduleDeleteDto.getId());
+        Optional<ScheduleDocument> findScheduleDocument = scheduleDocumentRepository.findById(scheduleDeleteDto.getId());
+        ScheduleDocument scheduleDocument = findScheduleDocument.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정 없습니다."));
+        scheduleDocumentRepository.delete(scheduleDocument);
         return new ResponseEntity(HttpStatus.OK);
     }
 
