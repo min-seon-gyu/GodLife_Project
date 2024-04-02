@@ -43,7 +43,7 @@ public class AopService {
     }
 
     @Around("@annotation(com.example.web.common.RedissonRock)")
-    public void redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object redissonLock(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         RedissonRock redissonRock = method.getAnnotation(RedissonRock.class);
@@ -54,7 +54,7 @@ public class AopService {
             if (!available) {
                 throw new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR, "락을 획득하지 못했습니다.");
             }
-            aopForTransaction.proceed(joinPoint);
+            return aopForTransaction.proceed(joinPoint);
         } catch (InterruptedException  e) {
             throw new InterruptedException();
         } finally {
