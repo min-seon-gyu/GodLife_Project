@@ -6,7 +6,6 @@ import com.example.web.member.Member;
 import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
 import com.example.web.redis.SignUpService;
-import com.example.web.schedule.Schedule;
 import com.example.web.schedule.ScheduleRepository;
 import com.example.web.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +26,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ViewController {
 
+    private final static String PREVIOUS = "previous";
+    private final static String NEXT = "next";
     private final MemberService memberService;
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
@@ -44,27 +44,36 @@ public class ViewController {
 
     @GetMapping(value = {"/schedule/**", "/schedule/{year}/{month}/{day}"})
     public String schedule(@AuthenticationPrincipal MemberDetails memberDetails, Model model,
-                       @PathVariable(value = "year", required = false) String year,
-                       @PathVariable(value = "month", required = false) String month,
-                       @PathVariable(value = "day", required = false) String day){
+                       @PathVariable(value = "year", required = false) Integer year,
+                       @PathVariable(value = "month", required = false) Integer month,
+                       @PathVariable(value = "day", required = false) Integer day){
         if(validCheck(year, month, day)){
             if(pastCheck(year, month, day)){
                 model.addAttribute("past", "true");
             }else{
                 model.addAttribute("past", "false");
             }
-            List<Schedule> schedules = scheduleRepository.findByMemberIdAndLocalDate(memberDetails.getId(), LocalDate.of(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day)));
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(year).append("-").append(month).append("-").append(day);
-
-            model.addAttribute("schedules", schedules);
+            model.addAttribute("schedules", scheduleRepository.findByMemberIdAndLocalDate(memberDetails.getId(), LocalDate.of(year,month,day)));
             model.addAttribute("name", memberDetails.getName());
-            model.addAttribute("day", sb.toString());
+            model.addAttribute("day", LocalDate.of(year, month, day).toString());
             return "main";
         }else{
             return "redirect:/schedule/" + getToday();
         }
+    }
+
+    @GetMapping("/move/{type}/{date}")
+    public String move(@PathVariable(value = "type", required = false) String type,
+                       @PathVariable(value = "date", required = false) LocalDate date){
+        if(type.equals(PREVIOUS)){
+            date = date.minusDays(1L);
+        }else if(type.equals(NEXT)){
+            date = date.plusDays(1L);
+        }else{
+            throw new RestApiException(ErrorCode.BAD_REQUEST, "타입이 유효하지 않습니다.");
+        }
+        String str = date.toString();
+        return "redirect:/schedule/" + str.substring(0,4) + "/" + str.substring(5,7) + "/" + str.substring(8);
     }
 
     @GetMapping("/createSignUpView")
@@ -133,21 +142,8 @@ public class ViewController {
         return "updateMember";
     }
 
-    private boolean validCheck(String y, String m, String d) {
-        if(y == null || m == null || d == null){
-            return false;
-        }
-
-        int year = 0;
-        int month = 0;
-        int day = 0;
-
-        try{
-            year = Integer.parseInt(y);
-            month = Integer.parseInt(m);
-            day = Integer.parseInt(d);
-        }catch(NumberFormatException e){
-            e.printStackTrace();
+    private boolean validCheck(Integer year, Integer month, Integer day) {
+        if(year == null || month == null || day == null){
             return false;
         }
 
@@ -181,8 +177,8 @@ public class ViewController {
         return true;
     }
 
-    private boolean pastCheck(String y, String m, String d) {
-        return LocalDate.of(Integer.parseInt(y), Integer.parseInt(m), Integer.parseInt(d)).isBefore(LocalDate.now());
+    private boolean pastCheck(Integer year, Integer month, Integer day) {
+        return LocalDate.of(year, month, day).isBefore(LocalDate.now());
     }
 
     private String getToday(){

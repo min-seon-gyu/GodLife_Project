@@ -33,7 +33,12 @@
             <button type="button" class="btn btn-secondary" onclick=logout() >로그아웃</button>
         </div>
 
-        <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px; display:inline;">
+        <div>
+            <a th:href="|/move/previous/${day}|" class="btn btn-secondary" role="button" style="display:inline;">이전</a>
+            <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px; display:inline;">
+            <a th:href="|/move/next/${day}|" class="btn btn-secondary" role="button" style="display:inline;">다음</a>
+        </div>
+
         <h2 style="margin-top: 30px; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
         <th:block th:each="schedule : ${schedules}">
             <div style="margin-top: 20px">
