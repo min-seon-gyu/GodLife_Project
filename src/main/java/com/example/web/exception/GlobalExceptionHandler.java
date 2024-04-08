@@ -5,6 +5,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         return handleExceptionInternal(ErrorCode.METHOD_NOT_ALLOWED, "해당 방식을 지원하지 않습니다.");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return handleExceptionInternal(ErrorCode.BAD_REQUEST, "타입이 불일치 합니다.");
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
