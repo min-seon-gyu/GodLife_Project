@@ -37,8 +37,8 @@ public class Schedule extends JpaBaseEntity {
         this.status = !this.status;
     }
 
-    public void setStatus(boolean status){
-        this.status = status;
+    public void initStatus(){
+        this.status = false;
     }
 
     public void changeContent(String content){

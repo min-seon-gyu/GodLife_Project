@@ -7,6 +7,7 @@ import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
 import com.example.web.redis.SignUpService;
 import com.example.web.schedule.ScheduleRepository;
+import com.example.web.schedule.ScheduleResponse;
 import com.example.web.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,7 +55,9 @@ public class ViewController {
             }else{
                 model.addAttribute("past", "false");
             }
-            model.addAttribute("schedules", scheduleRepository.findByMemberIdAndLocalDate(memberDetails.getId(), LocalDate.of(year,month,day)));
+            List<ScheduleResponse> schedules = scheduleRepository.findByMemberIdAndLocalDate(memberDetails.getId(), LocalDate.of(year, month, day))
+                    .stream().map(s -> new ScheduleResponse(s)).toList();
+            model.addAttribute("schedules", schedules);
             model.addAttribute("name", memberDetails.getName());
             model.addAttribute("day", LocalDate.of(year, month, day).toString());
             return "main";

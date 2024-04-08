@@ -33,7 +33,7 @@ public class ScheduleService {
         Optional<Schedule> findSchedule = scheduleRepository.findById(scheduleUpdateDto.getId());
         Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다."));
         schedule.changeContent(scheduleUpdateDto.getContent());
-        schedule.setStatus(false);
+        schedule.initStatus();
         return schedule.getId();
     }
 
