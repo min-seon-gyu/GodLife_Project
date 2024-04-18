@@ -45,7 +45,7 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         String password = passwordService.encode(passwordService.getRandom());
 
         Optional<Member> findMember = memberRepository.findTop1ByUsername(username);
-        Member member = findMember.orElseGet(() -> buildMember(username, password, email, provider, providerId, name));
+        Member member = findMember.orElseGet(() -> saveMember(username, password, email, provider, providerId, name));
 
         MemberSecurityDto memberSecurityDto = MemberSecurityDto.builder()
                 .id(member.getId())
@@ -59,7 +59,7 @@ public class OAuth2MemberDetailsService extends DefaultOAuth2UserService {
         return new MemberDetails(memberSecurityDto, attributes);
     }
 
-    private Member buildMember(String username, String password, String email, String provider, String providerId, String name){
+    private Member saveMember(String username, String password, String email, String provider, String providerId, String name){
         Member member = Member.builder()
                 .username(username)
                 .password(password)
