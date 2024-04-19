@@ -29,8 +29,7 @@ public class ElasticSearchConfig{
 
     @Bean
     public ElasticsearchClient getElasticSearchClient() {
-
-        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(username, password));
 
@@ -38,13 +37,8 @@ public class ElasticSearchConfig{
                 .setHttpClientConfigCallback(
                         httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
 
-        // Create the low-level client
         RestClient restClient = builder.build();
-
-        // Create the transport with a Jackson mapper
         ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
-
-        // And create the API client
         return new ElasticsearchClient(transport);
     }
 }

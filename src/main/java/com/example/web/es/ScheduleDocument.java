@@ -1,29 +1,33 @@
 package com.example.web.es;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.*;
-
 import java.time.LocalDate;
 
 @Getter
-@Document(indexName = "schedule")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
 public class ScheduleDocument {
     @Id
-    @Field(name = "schedule_id", type = FieldType.Long)
+    @JsonSetter("schedule_id")
     private Long scheduleId;
-    @Field(name = "member_id", type = FieldType.Long)
+    @JsonSetter("member_id")
     private Long memberId;
-    @Field(name = "content", type = FieldType.Text)
+    @JsonSetter("content")
     private String content;
-    @Field(name = "status", type = FieldType.Boolean)
+    @JsonSetter("status")
     private Boolean status;
-    @Field(name = "local_date", type = FieldType.Date)
+    @JsonSetter("local_date")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     @Temporal(TemporalType.DATE)
     private LocalDate localDate;
 }
