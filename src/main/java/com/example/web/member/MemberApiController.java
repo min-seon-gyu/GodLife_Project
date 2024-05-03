@@ -12,10 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
 @RestController
 public class MemberApiController {
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final MemberService memberService;
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
@@ -27,7 +30,7 @@ public class MemberApiController {
         memberSignUpDto.validPassword();
         String key = memberService.signUp(memberSignUpDto);
         signUpService.setData(key, memberSignUpDto);
-        new Thread(() -> mailService.signUp(memberSignUpDto.getEmail(), key)).start();
+        executorService.submit(() -> mailService.signUp(memberSignUpDto.getEmail(), key));
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -60,7 +63,7 @@ public class MemberApiController {
     public ResponseEntity findLoginId(@Valid @RequestBody MemberFindUsernameDto memberFindUsernameDto){
         Optional<Member> findMember = memberRepository.findTop1ByNameAndEmailAndIsOAuth(memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail(), false);
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
-        new Thread(() -> mailService.findId(memberFindUsernameDto.getEmail(), member.getUsername())).start();
+        executorService.submit(() -> mailService.findId(memberFindUsernameDto.getEmail(), member.getUsername()));
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -68,7 +71,7 @@ public class MemberApiController {
     @PostMapping("/findPassword")
     public ResponseEntity findPassword(@Valid @RequestBody MemberFindPasswordDto memberFindPasswordDto){
         String password = memberService.findPassword(memberFindPasswordDto);
-        new Thread(() -> mailService.findPassword(memberFindPasswordDto.getEmail(), password)).start();;
+        executorService.submit(() -> mailService.findPassword(memberFindPasswordDto.getEmail(), password));
         return new ResponseEntity(HttpStatus.OK);
     }
 }
