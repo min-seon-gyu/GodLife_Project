@@ -7,6 +7,8 @@ import com.example.web.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,9 +46,17 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void change(Long id) {
+    public void deleteAll(Long id){
+        List<Schedule> findSchedule = scheduleRepository.findByMemberId(id);
+        for (Schedule schedule : findSchedule) {
+            delete(schedule.getId());
+        }
+    }
+
+    @Transactional
+    public void success(Long id) {
         Optional<Schedule> findSchedule = scheduleRepository.findById(id);
         Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다."));
-        schedule.changeStatus();
+        schedule.success();
     }
 }

@@ -43,13 +43,12 @@
         <th:block th:each="schedule : ${schedules}">
             <div style="margin-top: 20px">
                 <div style="display:inline;">
-                    <h4 th:if="${schedule.status == true}" th:text="|😸 ${schedule.content}|" style="display:inline; vertical-align: middle;" ></h4>
-                    <h4 th:if="${schedule.status == false}" th:text="|😹 ${schedule.content}|" style="display:inline; vertical-align: middle;" ></h4>
+                    <h4 th:if="${schedule.status == true}" th:text="|✔ ${schedule.content}|" style="display:inline; vertical-align: middle;" ></h4>
+                    <h4 th:if="${schedule.status == false}" th:text="${schedule.content}" style="display:inline; vertical-align: middle;" ></h4>
                 </div>
                 <div style="margin-top: 10px">
-                    <button th:if="${past == 'false'}" class="change-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">
-                        <p th:if="${schedule.status == true}" style="display:inline;" >미완</p>
-                        <p th:if="${schedule.status == false}" style="display:inline;">완료</p>
+                    <button th:if="${past == 'false' && schedule.status == false}" class="success-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">
+                        <p style="display:inline;">완료</p>
                     </button>
                     <button th:if="${past == 'false'}" class="update-btn" th:attr="id=${schedule.id}, content=${schedule.content}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">수정</button>
                     <button th:if="${past == 'false'}" class="delete-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">삭제</button>
@@ -263,12 +262,12 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  var changeButtons = document.querySelectorAll(".change-btn");
+  var changeButtons = document.querySelectorAll(".success-btn");
 
   changeButtons.forEach(function(button) {
     button.addEventListener("click", function() {
       var id = button.getAttribute("id");
-      fetch("/schedule/changeStatus", {
+      fetch("/schedule/success", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

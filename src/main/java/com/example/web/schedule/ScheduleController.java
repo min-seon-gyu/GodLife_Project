@@ -41,10 +41,10 @@ public class ScheduleController {
         return ResponseEntity.ok(id);
     }
 
-    @PostMapping("/schedule/changeStatus")
-    public ResponseEntity change(@RequestBody String id){
+    @PostMapping("/schedule/success")
+    public ResponseEntity success(@RequestBody String id){
         JSONObject jsonObject = new JSONObject(id);
-        scheduleService.change(Long.parseLong(jsonObject.getString("id")));
+        scheduleService.success(Long.parseLong(jsonObject.getString("id")));
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -59,7 +59,13 @@ public class ScheduleController {
                                  @RequestBody ScheduleDeleteDto scheduleDeleteDto) throws IOException {
         postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getId());
         scheduleService.delete(scheduleDeleteDto.getId());
-        elasticsearchClient.delete(d -> d.index("schedule").id(String.valueOf(scheduleDeleteDto.getId())));
+        Query matchQuery = QueryBuilders.match().field("schedule_id").query(scheduleDeleteDto.getId()).build()._toQuery();
+        SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
+                        .index("schedule")
+                        .query(matchQuery), ScheduleDocument.class);
+        if(search.hits().total().value() > 0){
+            elasticsearchClient.delete(d -> d.index("schedule").id(String.valueOf(scheduleDeleteDto.getId())));
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -68,7 +74,7 @@ public class ScheduleController {
                                        @PathVariable(value = "content", required = false) String content,
                                        @PathVariable(value = "pageIndex", required = false) int pageIndex) throws IOException {
         Query termQuery = QueryBuilders.term().field("content").value(FieldValue.of(content)).build()._toQuery();
-        Query matchQuery = QueryBuilders.match().field("member_id").query(2l).build()._toQuery();
+        Query matchQuery = QueryBuilders.match().field("member_id").query(2).build()._toQuery();
         SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
                         .index("schedule")
                         .query(q -> q

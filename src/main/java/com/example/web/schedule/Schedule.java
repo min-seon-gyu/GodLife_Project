@@ -33,8 +33,8 @@ public class Schedule extends JpaBaseEntity {
         this.localDate = localDate;
     }
 
-    public void changeStatus(){
-        this.status = !this.status;
+    public void success(){
+        this.status = true;
     }
 
     public void initStatus(){

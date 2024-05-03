@@ -4,6 +4,7 @@ import com.example.web.common.MailService;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import com.example.web.redis.SignUpService;
+import com.example.web.schedule.ScheduleService;
 import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.concurrent.Executors;
 public class MemberApiController {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final MemberService memberService;
+    private final ScheduleService scheduleService;
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
     private final MailService mailService;
@@ -54,6 +56,7 @@ public class MemberApiController {
     //회원삭제 요청
     @DeleteMapping("/member")
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails){
+        scheduleService.deleteAll(memberDetails.getId());
         memberService.delete(memberDetails.getId());
         return new ResponseEntity(HttpStatus.OK);
     }
