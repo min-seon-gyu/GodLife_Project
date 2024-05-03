@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,10 +22,10 @@ import java.util.concurrent.Executors;
 public class MemberApiController {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final MemberService memberService;
-    private final ScheduleService scheduleService;
     private final SignUpService signUpService;
-    private final MemberRepository memberRepository;
     private final MailService mailService;
+    private final ScheduleService scheduleService;
+    private final MemberRepository memberRepository;
 
     //회원가입 요청
     @PostMapping("/member")
@@ -55,8 +56,8 @@ public class MemberApiController {
 
     //회원삭제 요청
     @DeleteMapping("/member")
-    public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails){
-        scheduleService.deleteAll(memberDetails.getId());
+    public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails) throws IOException {
+        scheduleService.deleteByMemberId(memberDetails.getId());
         memberService.delete(memberDetails.getId());
         return new ResponseEntity(HttpStatus.OK);
     }

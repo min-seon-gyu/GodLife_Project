@@ -59,13 +59,6 @@ public class ScheduleController {
                                  @RequestBody ScheduleDeleteDto scheduleDeleteDto) throws IOException {
         postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getId());
         scheduleService.delete(scheduleDeleteDto.getId());
-        Query matchQuery = QueryBuilders.match().field("schedule_id").query(scheduleDeleteDto.getId()).build()._toQuery();
-        SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
-                        .index("schedule")
-                        .query(matchQuery), ScheduleDocument.class);
-        if(search.hits().total().value() > 0){
-            elasticsearchClient.delete(d -> d.index("schedule").id(String.valueOf(scheduleDeleteDto.getId())));
-        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

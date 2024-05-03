@@ -1,5 +1,9 @@
 package com.example.web.schedule;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import com.example.web.es.ScheduleDocument;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import com.example.web.member.Member;
@@ -7,8 +11,7 @@ import com.example.web.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -17,6 +20,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
+    private final ElasticsearchClient elasticsearchClient;
 
     @Transactional
     public Long post(Long id, ScheduleAddDto scheduleAddDto) {
@@ -40,16 +44,25 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(Long id) throws IOException {
         Optional<Schedule> findSchedule = scheduleRepository.findById(id);
         scheduleRepository.delete(findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다.")));
+        SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
+                .index("schedule")
+                .query(QueryBuilders.match().field("schedule_id").query(id).build()._toQuery()), ScheduleDocument.class);
+        if(search.hits().total().value() > 0){
+            elasticsearchClient.delete(d -> d.index("schedule").id(String.valueOf(id)));
+        }
     }
 
     @Transactional
-    public void deleteAll(Long id){
-        List<Schedule> findSchedule = scheduleRepository.findByMemberId(id);
-        for (Schedule schedule : findSchedule) {
-            delete(schedule.getId());
+    public void deleteByMemberId(Long id) throws IOException {
+        scheduleRepository.deleteByMemberId(id);
+        SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
+                .index("schedule")
+                .query(QueryBuilders.match().field("member_id").query(id).build()._toQuery()), ScheduleDocument.class);
+        if(search.hits().total().value() > 0){
+            elasticsearchClient.deleteByQuery(d -> d.index("schedule").query(QueryBuilders.match().field("member_id").query(id).build()._toQuery()));
         }
     }
 
