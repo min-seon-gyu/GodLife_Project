@@ -19,8 +19,6 @@
       .container {
         max-width: 1200px;
       }
-
-
     </style>
 </head>
 <body>
@@ -29,16 +27,15 @@
     <div class="container">
         <div align="right" style="margin-top: 20px">
             <h5 style="display:inline; vertical-align: middle; font-weight : bold;" th:text="|안녕하세요 ${name}님!!|"></h5>
-            <a href="/createUpdateMemberView" class="btn btn-secondary" role="button" >마이페이지</a>
-            <button type="button" class="btn btn-secondary" onclick=logout() >로그아웃</button>
+            <a href="/createStoreView" class="btn btn-secondary" role="button" style="width:110px">상점</a>
+            <a href="/createUpdateMemberView" class="btn btn-secondary" role="button" style="width:110px">마이페이지</a>
+            <button type="button" class="btn btn-secondary" onclick=logout() style="width:110px">로그아웃</button>
         </div>
-
         <div>
             <a th:href="|/move/previous/${day}|" class="btn btn-secondary" role="button" style="display:inline;">이전</a>
             <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px; display:inline;">
             <a th:href="|/move/next/${day}|" class="btn btn-secondary" role="button" style="display:inline;">다음</a>
         </div>
-
         <h2 style="margin-top: 30px; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
         <th:block th:each="schedule : ${schedules}">
             <div style="margin-top: 20px">
@@ -56,9 +53,7 @@
             </div>
         </th:block>
         <button th:if="${past == 'false'}" id="openAddModal" style="font-weight : bold; background: #e3d5ca; border-radius: 15px; margin-top: 30px" >추가하기</button>
-
         <br>
-
         <div style="margin-top: 20px">
             <label>검색할 일정을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label><br>
             <input type="search" id="findContent" maxlength="30" minlength="2" style="vertical-align: middle;">
@@ -91,8 +86,6 @@
             </div>
         </div>
 
-
-
         <div id="findModal" class="modal">
             <div class="modal-content">
                 <h3 id="subtitle"></h3>
@@ -103,7 +96,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -266,15 +258,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   changeButtons.forEach(function(button) {
     button.addEventListener("click", function() {
-      var id = button.getAttribute("id");
-      fetch("/schedule/success", {
+      fetch(`/schedule/success/${button.getAttribute("id")}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          id: id
-        })
+        }
       })
       .then(res => {
         if(res.status === 200){
