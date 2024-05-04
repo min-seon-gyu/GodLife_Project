@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberApiController {
+public class MemberController {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final MemberService memberService;
     private final SignUpService signUpService;
@@ -41,8 +41,8 @@ public class MemberApiController {
     @PatchMapping("/member")
     public ResponseEntity update(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @RequestBody MemberUpdateDto memberUpdateDto){
-        memberService.update(memberUpdateDto, memberDetails.getId());
-        return new ResponseEntity(HttpStatus.OK);
+        Long id = memberService.update(memberUpdateDto, memberDetails.getId());
+        return ResponseEntity.ok(id);
     }
 
     //비밀번호 변경 요청
@@ -50,8 +50,8 @@ public class MemberApiController {
     public ResponseEntity updatePassword(@AuthenticationPrincipal MemberDetails memberDetails,
                                          @Valid @RequestBody MemberUpdatePasswordDto memberUpdatePasswordDto){
         memberUpdatePasswordDto.validPassword();
-        memberService.updatePassword(memberUpdatePasswordDto, memberDetails.getId());
-        return new ResponseEntity(HttpStatus.OK);
+        Long id = memberService.updatePassword(memberUpdatePasswordDto, memberDetails.getId());
+        return ResponseEntity.ok(id);
     }
 
     //회원삭제 요청

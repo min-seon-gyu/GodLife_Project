@@ -26,7 +26,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void signUpConfirm(Map<Object, Object> data){
+    public Long signUpConfirm(Map<Object, Object> data){
         Member member = Member.builder()
                 .username((String) data.get("username"))
                 .email((String) data.get("email"))
@@ -35,21 +35,23 @@ public class MemberService {
                 .role(MemberRole.USER)
                 .isOAuth(false)
                 .build();
-        memberRepository.save(member);
+        return memberRepository.save(member).getId();
     }
 
     @Transactional
-    public void update(MemberUpdateDto memberUpdateDto, Long id) {
+    public Long update(MemberUpdateDto memberUpdateDto, Long id) {
         Optional<Member> findMember = memberRepository.findById(id);
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         member.update(memberUpdateDto);
+        return member.getId();
     }
 
     @Transactional
-    public void updatePassword(MemberUpdatePasswordDto memberUpdatePasswordDto, Long id){
+    public Long updatePassword(MemberUpdatePasswordDto memberUpdatePasswordDto, Long id){
         Optional<Member> findMember = memberRepository.findById(id);
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         member.changePassword(passwordService.encode(memberUpdatePasswordDto.getPassword()));
+        return member.getId();
     }
 
     @Transactional
