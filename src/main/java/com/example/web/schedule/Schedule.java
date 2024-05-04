@@ -5,7 +5,6 @@ import com.example.web.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-
 import java.time.LocalDate;
 
 @Entity
@@ -17,7 +16,6 @@ public class Schedule extends JpaBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SCHEDULE_ID")
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;

@@ -14,12 +14,10 @@ import com.example.web.redis.PostService;
 import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +33,15 @@ public class ScheduleController {
 
     @PostMapping("/schedule")
     public ResponseEntity<Long> add(@AuthenticationPrincipal MemberDetails memberDetails,
-                               @Valid @RequestBody ScheduleAddDto scheduleAddDto){
+                                    @Valid @RequestBody ScheduleAddDto scheduleAddDto){
         postService.decreaseWriteCount(scheduleAddDto.getDate()+ "_" + memberDetails.getId());
         Long id = scheduleService.post(memberDetails.getId(), scheduleAddDto);
         return ResponseEntity.ok(id);
     }
 
-    @PostMapping("/schedule/success")
-    public ResponseEntity success(@RequestBody String id){
-        JSONObject jsonObject = new JSONObject(id);
-        scheduleService.success(Long.parseLong(jsonObject.getString("id")));
+    @PostMapping("/schedule/success/{id}")
+    public ResponseEntity success(@PathVariable(value = "id") Long id){
+        scheduleService.success(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -56,7 +53,7 @@ public class ScheduleController {
 
     @DeleteMapping("/schedule")
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails,
-                                 @RequestBody ScheduleDeleteDto scheduleDeleteDto) throws IOException {
+                                 @Valid @RequestBody ScheduleDeleteDto scheduleDeleteDto) throws IOException {
         postService.incrementWriteCount(scheduleDeleteDto.getDate()+ "_" + memberDetails.getId());
         scheduleService.delete(scheduleDeleteDto.getId());
         return new ResponseEntity(HttpStatus.OK);
@@ -67,7 +64,7 @@ public class ScheduleController {
                                        @PathVariable(value = "content", required = false) String content,
                                        @PathVariable(value = "pageIndex", required = false) int pageIndex) throws IOException {
         Query termQuery = QueryBuilders.term().field("content").value(FieldValue.of(content)).build()._toQuery();
-        Query matchQuery = QueryBuilders.match().field("member_id").query(2).build()._toQuery();
+        Query matchQuery = QueryBuilders.match().field("member_id").query(memberDetails.getId()).build()._toQuery();
         SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
                         .index("schedule")
                         .query(q -> q
