@@ -41,13 +41,17 @@ public class SecurityConfig{
                 .httpBasic((basic) -> basic.disable())
                 .authorizeHttpRequests(request -> {
                     //인증이 필요한 요청
-                    request.requestMatchers(HttpMethod.GET,"/createUpdateMemberView.").authenticated();
-                    request.requestMatchers(HttpMethod.GET,"/createUpdateMemberSuccessView").authenticated();
-                    request.requestMatchers(HttpMethod.GET,"/createUpdatePasswordView").authenticated();
-                    request.requestMatchers(HttpMethod.GET,"/createUpdatePasswordSuccessView").authenticated();
-                    request.requestMatchers(HttpMethod.GET,"/schedule/**").authenticated();
+                    request.requestMatchers("/createUpdateMemberView.").authenticated();
+                    request.requestMatchers("/createUpdateMemberSuccessView").authenticated();
+                    request.requestMatchers("/createUpdatePasswordView").authenticated();
+                    request.requestMatchers("/createUpdatePasswordSuccessView").authenticated();
+                    request.requestMatchers("/createStoreView").authenticated();
+                    request.requestMatchers("/schedule/**").authenticated();
+                    request.requestMatchers("/item/**").authenticated();
+                    request.requestMatchers("/order/**").authenticated();
+                    request.requestMatchers("/coupon/**").authenticated();
                     //ADMIN 권한이 필요한 요청
-                    //request.requestMatchers("/test").hasAnyAuthority("ADMIN");
+                    request.requestMatchers("/product/**").hasAnyAuthority("ADMIN");
                     request.anyRequest().permitAll();
                 })
                 .formLogin((login) -> login
