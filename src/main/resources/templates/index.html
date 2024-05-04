@@ -72,7 +72,7 @@
 
         <div th:if="${login == 'true'}">
             <div>
-                <button class="w-100 btn btn-primary btn" onclick=start() style="margin-bottom: 10px" >서비스 이용</button>
+                <a href="/schedule" class="w-100 btn btn-primary btn" role="button" style="margin-bottom: 10px">메인페이지</a>
             </div>
             <div>
                 <button class="w-100 btn btn-primary btn" onclick=logout() >로그아웃</button>
@@ -98,14 +98,6 @@
             }
         });
    }
-
-    function start() {
-        let date = new Date();
-        let year = date.getFullYear();
-        let month = (date.getMonth() + 1).toString().padStart(2, '0');
-        let day = date.getDate().toString().padStart(2, '0');
-        location.replace(`/schedule/${year}/${month}/${day}`)
-    }
 </script>
 </body>
 </html>
