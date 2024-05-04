@@ -34,6 +34,7 @@ public class MemberService {
                 .password(passwordService.encode((String) data.get("password")))
                 .role(MemberRole.USER)
                 .isOAuth(false)
+                .point(0l)
                 .build();
         return memberRepository.save(member).getId();
     }
