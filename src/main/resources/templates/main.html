@@ -36,7 +36,10 @@
             <input type="text" id="datePicker" class="form-control" th:value="${day}" style="width:270px; display:inline;">
             <a th:href="|/move/next/${day}|" class="btn btn-secondary" role="button" style="display:inline;">다음</a>
         </div>
-        <h2 style="margin-top: 30px; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
+        <div style="margin-top: 20px">
+            <h2 style="display:inline; vertical-align: middle; font-weight : bold;" th:text="|${day} 일정 (최대 5개)|"></h2>
+            <button th:if="${past == 'false'}" id="openAddModal" class="btn btn-secondary" >추가하기</button>
+        </div>
         <th:block th:each="schedule : ${schedules}">
             <div style="margin-top: 20px">
                 <div style="display:inline;">
@@ -52,7 +55,6 @@
                 </div>
             </div>
         </th:block>
-        <button th:if="${past == 'false'}" id="openAddModal" style="font-weight : bold; background: #e3d5ca; border-radius: 15px; margin-top: 30px" >추가하기</button>
         <br>
         <div style="margin-top: 20px">
             <label>검색할 일정을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label><br>
