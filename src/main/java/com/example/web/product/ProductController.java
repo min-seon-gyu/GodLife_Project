@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collection;
 
 @RestController
@@ -53,5 +52,4 @@ public class ProductController {
         System.out.println("authority = " + authority);
         return authority.equals("ADMIN") ? true : false;
     }
-
 }

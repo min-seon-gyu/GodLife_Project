@@ -2,7 +2,6 @@ package com.example.web.common;
 
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
