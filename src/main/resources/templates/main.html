@@ -169,15 +169,14 @@
                 content: content
             })
        })
-       .then(res => {
-           if(res.status === 400){
-           console.log(res);
-               alert("입력하신 데이터가 올바르지 않습니다.");
-           }else if(res.status === 500){
-               alert("잠시 후 다시 시도해주세요.");
-           }else if(res.status === 200){
-               <!--일정 추가 성공 시 새로고침-->
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
                window.location.href=window.location.href
+           }else if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
            }
        });
    }
@@ -198,14 +197,14 @@
                 content: content
             })
        })
-       .then(res => {
-           if(res.status === 400){
-               alert("입력하신 데이터가 올바르지 않습니다.");
-           }else if(res.status === 500){
-               alert("잠시 후 다시 시도해주세요.");
-           }else if(res.status === 200){
-               <!--일정 수정 성공 시 새로고침-->
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
                window.location.href=window.location.href
+           }else if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
            }
        });
    }
@@ -219,37 +218,32 @@
        fetch(`/search_schedule/${content}/${btn.getAttribute("index")}`, {
            method: "GET"
        })
-       .then(res => {
-           if(res.status === 400){
-               alert("입력하신 데이터가 올바르지 않습니다.");
-           }else if(res.status === 500){
-               alert("잠시 후 다시 시도해주세요.");
-           }else if(res.status === 200){
-               <!--Promise 반환-->
-               return res.json();
-           }
-       })
+       .then(res => res.json())
        .then(data => {
-           <!--기존 테이블 가져오기-->
-           const table = document.getElementById('modalData').querySelector('table');
-           <!--테이블에 행 추가하기-->
-           data.lst.forEach(item => {
-               const row = table.insertRow();
-               Object.values(item).forEach(value => {
-                   const cell = row.insertCell();
-                   cell.textContent = value;
-                   cell.style.width = '33.33%'
-               });
-           });
+           if(data.code === 200){
+                <!--기존 테이블 가져오기-->
+                const table = document.getElementById('modalData').querySelector('table');
+                <!--테이블에 행 추가하기-->
+                data.lst.forEach(item => {
+                    const row = table.insertRow();
+                       Object.values(item).forEach(value => {
+                          const cell = row.insertCell();
+                          cell.textContent = value;
+                          cell.style.width = '33.33%'
+                     });
+                 });
 
-           <!--다음 데이터가 존재하면 '더보기' 버튼 보이게 설정하고 다음 인덱스도 설정-->
-           if(data.hasNext){
-               btn.style.display = "block";
-               btn.setAttribute("index", data.nextIndex);
-           }
-           <!--다음 데이터가 존재하지 않으면 '더보기' 버튼 안보이게 설정-->
-           else{
-               btn.style.display = "none";
+                 <!--다음 데이터가 존재하면 '더보기' 버튼 보이게 설정하고 다음 인덱스도 설정-->
+                  if(data.hasNext){
+                     btn.style.display = "block";
+                     btn.setAttribute("index", data.nextIndex);
+                  }
+                  <!--다음 데이터가 존재하지 않으면 '더보기' 버튼 안보이게 설정-->
+                  else{
+                       btn.style.display = "none";
+                  }
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
            }
        });
    }
@@ -266,9 +260,12 @@ document.addEventListener("DOMContentLoaded", function() {
           "Content-Type": "application/json"
         }
       })
-      .then(res => {
-        if(res.status === 200){
+      .then(res => res.json())
+      .then(data => {
+        if(data.code === 200){
           window.location.href=window.location.href
+        }else if(data.code === 400){
+          alert(data.message);
         }else{
           alert("잠시 후 다시 시도해주세요.");
         }
@@ -292,10 +289,13 @@ document.addEventListener("DOMContentLoaded", function() {
           date: date
         })
       })
-      .then(res => {
-        if(res.status === 200){
+      .then(res => res.json())
+      .then(data => {
+        if(data.code === 200){
           window.location.href=window.location.href
-        }else{
+        }else if(data.code === 400){
+          alert(data.message);
+        }else {
           alert("잠시 후 다시 시도해주세요.");
         }
       });
@@ -351,17 +351,10 @@ document.addEventListener("DOMContentLoaded", function() {
        fetch(`/search_schedule/${content}/0`, {
            method: "GET"
        })
-       .then(res => {
-           if(res.status === 400){
-               alert("입력하신 데이터가 올바르지 않습니다.");
-           }else if(res.status === 500){
-               alert("잠시 후 다시 시도해주세요.");
-           }else if(res.status === 200){
-               return res.json();
-           }
-       })
+       .then(res => res.json())
        .then(data => {
-           document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
+           if(res.status === 200){
+               document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
            var btn = document.getElementById("more-find-btn");
 
            const table = document.createElement('table');
@@ -396,6 +389,9 @@ document.addEventListener("DOMContentLoaded", function() {
            modalDataContainer.innerHTML = ''; // 모달 내용 초기화
            modalDataContainer.appendChild(table);
            findModal.style.display = "block";
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
        });
     }
 

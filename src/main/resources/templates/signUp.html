@@ -76,7 +76,6 @@
         var passwordCheck = document.getElementById("passwordCheck").value;
         var name = document.getElementById("name").value;
         var address = document.getElementById("address").value;
-
         fetch("/member", {
             method: "POST",
             headers: {
@@ -91,13 +90,16 @@
                 address: address
             })
         })
-        .then(res => {
-            if(res.status === 400){
-                alert("입력하신 정보가 올바르지 않습니다.");
-            }else if(res.status === 500){
-                alert("잠시 후 다시 시도해주세요.");
-            }else if(res.status === 200){
+        .then(res => res.json())
+        .then(data => {
+            if(data.code === 200){
                 window.location.href="createSignUpSuccessView"
+            }else if(data.code === 400){
+                alert(data.message);
+            }else if(data.code === 500){
+                alert(data.message);
+            }else {
+                alert("잠시 후 다시 시도해주세요.");
             }
         });
     }

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <link
+          th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css"
+          rel="stylesheet"
+  />
+  <style>
+      .background {
+        width: 100vw;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        max-width: 1200px;
+      }
+    </style>
+</head>
+<body>
+<div class="background">
+  <div class="container">
+    <div align="right" style="margin-top: 20px">
+      <h5 style="display:inline; vertical-align: middle; font-weight : bold;" th:text="|${name}님의 포인트는 ${point}입니다.|"></h5>
+      <a href="/schedule" class="btn btn-secondary" role="button" style="width:110px">메인페이지</a>
+      <button type="button" class="btn btn-secondary" onclick=logout() style="width:110px">로그아웃</button>
+    </div>
+    <h2 style="margin-top: 30px; font-weight : bold;" >보유하고 있는 아이템</h2>
+    <table class="table table-striped table-hover" style="table-layout: fixed" >
+      <thead>
+      <tr>
+        <th>이름</th>
+        <th>수량</th>
+        <th width="5%">사용</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${items}">
+        <td th:text="${item.name}">이름</td>
+        <td th:text="|${item.quantity}개|">수량</td>
+        <td class="use-btn" role="button" th:attr="id=${item.id}" style="font-weight : bold">사용</td>
+      </tr>
+      </tbody>
+    </table>
+    <br>
+    <div style="margin-top: 20px">
+      <h2 style="display:inline; vertical-align: middle; font-weight : bold;" >상품 목록</h2>
+      <button th:if="${authority == 'ADMIN'}" id="openAddModal" class="btn btn-secondary" >추가하기</button>
+    </div>
+    <table class="table table-striped table-hover" style="table-layout: fixed" >
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>가격</th>
+          <th>수량</th>
+          <th th:if="${authority == 'ADMIN'}" width="5%">수정</th>
+          <th th:if="${authority == 'ADMIN'}" width="5%">삭제</th>
+          <th th:if="${authority == 'USER'}" width="5%">구매</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="product : ${products}">
+          <td th:text="${product.name}">이름</td>
+          <td th:text="|${product.price}원|">가격</td>
+          <td th:text="|${product.quantity}개|">수량</td>
+          <td th:if="${authority == 'ADMIN'}" class="update-btn" role="button" th:attr="id=${product.id}, name=${product.name}, price=${product.price}, quantity=${product.quantity}" style="font-weight : bold">수정</td>
+          <td th:if="${authority == 'ADMIN'}" class="delete-btn" role="button"  th:attr="id=${product.id}" style="font-weight : bold">삭제</td>
+          <td th:if="${authority == 'USER'}" class="calculator-btn" role="button" th:attr="id=${product.id}, price=${product.price}" style="font-weight : bold">구매</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!--Modal-->
+
+    <div id="addModal" class="modal">
+      <div class="modal-content">
+        <label>이름을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label>
+        <input type="text" id="addName" style="margin-top: 10px" class="form-control" maxlength="30"
+               minlength="2">
+        <label>가격을 입력해주세요. (최소 100원, 최대 100000원 입니다.)</label>
+        <input type="number" id="addPrice" style="margin-top: 10px" class="form-control" maxlength="6"
+               minlength="3">
+        <label>수량을 입력해주세요. (최소 1개, 최대 10000개 입니다.)</label>
+        <input type="number" id="addQuantity" style="margin-top: 10px" class="form-control" maxlength="5"
+               minlength="1">
+        <div align="right" style="margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick=add()>추가</button>
+          <button type="button" class="btn btn-secondary" id="close-add-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="updateModal" class="modal">
+      <div class="modal-content">
+        <label>이름을 입력해주세요. (최소 2자, 최대 30자 입니다.)</label>
+        <input type="text" id="updateName" style="margin-top: 10px" class="form-control" maxlength="30"
+               minlength="2">
+        <label>가격을 입력해주세요. (최소 100원, 최대 100000원 입니다.)</label>
+        <input type="number" id="updatePrice" style="margin-top: 10px" class="form-control" maxlength="6"
+               minlength="3">
+        <label>수량을 입력해주세요. (최소 1개, 최대 10000개 입니다.)</label>
+        <input type="number" id="updateQuantity" style="margin-top: 10px" class="form-control" maxlength="5"
+               minlength="1">
+        <div align="right" style="margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick=update()>추가</button>
+          <button type="button" class="btn btn-secondary" id="close-update-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="calculatorModal" class="modal">
+      <div class="modal-content" style="width: 500px; height: 300px">
+        <label>수량을 입력해주세요.</label>
+        <input type="number" id="quantity" style="margin-top: 10px" class="form-control" maxlength="5"
+               minlength="1">
+        <br>
+        <label>사용할 쿠폰을 선택해주세요.</label>
+        <select class="form-select" aria-label="Default select example" id="memberCoupon">
+          <option value="0" selected>사용 안함</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+        <div align="right" style="margin-top: auto;">
+          <button type="button" class="btn btn-secondary" onclick=calculator()>다음</button>
+          <button type="button" class="btn btn-secondary" id="close-calculator-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="buyModal" class="modal">
+      <div class="modal-content" style="width: 500px; height: 300px">
+        <h5 style="display:inline; margin-top: 20px; font-weight : bold;" id="buyContent"></h5>
+        <div align="right" style="margin-top: auto;">
+          <button type="button" class="btn btn-secondary" id="before-buy-btn">이전</button>
+          <button type="button" class="btn btn-secondary" onclick=buy()>결제</button>
+          <button type="button" class="btn btn-secondary" id="close-buy-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="successModal" class="modal">
+      <div class="modal-content" style="width: 500px; height: 300px">
+        <h5 style="display:inline; margin-top: 20px; font-weight : bold;">결제가 완료되었습니다.</h5>
+        <div align="right" style="margin-top: auto;">
+          <button type="button" class="btn btn-secondary" id="close-success-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- /container -->
+<script>
+    function logout() {
+        fetch("/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        })
+        .then(res => {
+            if(res.status === 200){
+               window.location.href=window.location.href
+            }else{
+               alert("잠시 후 다시 시도해주세요.");
+            }
+        });
+   }
+
+   <!--상품을 추가하는 함수-->
+   function add() {
+       var name = document.getElementById("addName").value;
+       var price = document.getElementById("addPrice").value;
+       var quantity = document.getElementById("addQuantity").value;
+       fetch("/product", {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                name: name,
+                price: price,
+                quantity: quantity
+            })
+       })
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
+               window.location.href=window.location.href
+           }else if(data.code === 403){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
+       });
+   }
+
+   <!--상품을 수정하는 함수-->
+   function update() {
+       var id = document.getElementById("updateName").getAttribute("product_id");
+       var name = document.getElementById("updateName").value;
+       var price = document.getElementById("updatePrice").value;
+       var quantity = document.getElementById("updateQuantity").value;
+       <!--FETCH 요청으로 전송-->
+       fetch("/product", {
+           method: "PATCH",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                id: id,
+                name: name,
+                price: price,
+                quantity: quantity
+            })
+       })
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
+               window.location.href=window.location.href
+           }else if(data.code === 403){
+               alert(data.message);
+           }else if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
+       });
+   }
+
+   <!--상품을 계산하는 함수-->
+   function calculator() {
+       var price = document.getElementById("quantity").getAttribute("price");
+       var quantity = document.getElementById("quantity").value;
+       var userCouponId = document.getElementById("memberCoupon").value;
+       fetch("/order/cost", {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                price: price,
+                quantity: quantity,
+                userCouponId: userCouponId
+            })
+       })
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
+               buyModal.style.display = "block";
+               var buyContent = document.getElementById("buyContent");
+               document.getElementById("quantity").setAttribute("totalPrice", data);
+               buyContent.textContent = `결제 금액은 ${data}원 입니다.`;
+           }else if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
+       });
+   }
+
+   <!--상품을 주문하는 함수-->
+   function buy() {
+       var productId = document.getElementById("quantity").getAttribute("product_id");
+       var userCouponId = document.getElementById("memberCoupon").value;
+       var totalPrice = document.getElementById("quantity").getAttribute("totalPrice").replace(/,/g, '');
+       var totalQuantity = document.getElementById("quantity").value;
+       fetch("/order", {
+           method: "POST",
+           headers: {
+               "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+                productId: productId,
+                userCouponId: userCouponId,
+                totalPrice: totalPrice,
+                totalQuantity: totalQuantity
+            })
+       })
+       .then(res => res.json())
+       .then(data => {
+           if(data.code === 200){
+               successModal.style.display = "block";
+               buyModal.style.display = "none";
+               calculatorModal.style.display = "none";
+               coupon.value = 0;
+               quantity.value = 0;
+           }else if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
+       });
+   }
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  var deleteButtons = document.querySelectorAll(".delete-btn");
+
+  deleteButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      fetch(`/product/${button.getAttribute("id")}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+          if(data.code === 200){
+              window.location.href=window.location.href
+          }else if(data.code === 403){
+              alert(data.message);
+          }else {
+              alert("잠시 후 다시 시도해주세요.");
+          }
+      });
+    });
+  });
+
+  var calculatorButtons = document.querySelectorAll(".calculator-btn");
+
+  calculatorButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var id = button.getAttribute("id");
+      var price = button.getAttribute("price");
+      quantity.value = 0;
+      quantity.setAttribute("product_id", id);
+      quantity.setAttribute("price", price.replace(/,/g, ''));
+      calculatorModal.style.display = "block";
+    });
+  });
+
+  var updateButtons = document.querySelectorAll(".update-btn");
+
+  updateButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var name = button.getAttribute("name");
+      var price = button.getAttribute("price");
+      var quantity = button.getAttribute("quantity");
+      var id = button.getAttribute("id");
+      var updateName = document.getElementById("updateName");
+      var updatePrice = document.getElementById("updatePrice");
+      var updateQuantity = document.getElementById("updateQuantity");
+      updateModal.style.display = "block";
+      updateName.value = name;
+      updatePrice.value = price.replace(/,/g, '');
+      updateQuantity.value = quantity.replace(/,/g, '');
+      updateName.setAttribute("product_id", id);
+    });
+  });
+});
+
+    //상품 추가 Modal
+    var openAddModalBtn = document.getElementById("openAddModal");
+    var closeAddModalBtn = document.getElementById("close-add-btn");
+    var addModal = document.getElementById("addModal");
+    var addName = document.getElementById("addName");
+    var addPrice = document.getElementById("addPrice");
+    var addQuantity = document.getElementById("addQuantity");
+
+    if(openAddModalBtn !== null){
+        openAddModalBtn.onclick = function() {
+            addModal.style.display = "block";
+        }
+    }
+
+    closeAddModalBtn.onclick = function() {
+        addModal.style.display = "none";
+        addName.value = "";
+        addPrice.value = 0;
+        addQuantity.value = 0;
+    }
+
+    //상품 삭제 Modal
+    var closeUpdateModalBtn = document.getElementById("close-update-btn");
+    var updateModal = document.getElementById("updateModal");
+
+    closeUpdateModalBtn.onclick = function() {
+        updateModal.style.display = "none";
+    }
+
+    //상품 계산 Modal
+    var closeCalculatorModalBtn = document.getElementById("close-calculator-btn");
+    var calculatorModal = document.getElementById("calculatorModal");
+    var quantity = document.getElementById("quantity");
+    var coupon = document.getElementById("memberCoupon");
+
+    closeCalculatorModalBtn.onclick = function() {
+        calculatorModal.style.display = "none";
+        coupon.value = 0;
+        quantity.value = 0;
+    }
+
+    //상품 결제 Modal
+    var beforeBuyModalBtn = document.getElementById("before-buy-btn");
+    var closeBuyModalBtn = document.getElementById("close-buy-btn");
+    var buyModal = document.getElementById("buyModal");
+
+    beforeBuyModalBtn.onclick = function() {
+        buyModal.style.display = "none";
+    }
+
+    closeBuyModalBtn.onclick = function() {
+        buyModal.style.display = "none";
+        calculatorModal.style.display = "none";
+        coupon.value = 0;
+        quantity.value = 0;
+    }
+
+    var closeSuccessModalBtn = document.getElementById("close-success-btn");
+    var successModal = document.getElementById("successModal");
+
+    closeSuccessModalBtn.onclick = function() {
+        successModal.style.display = "none";
+        window.location.href=window.location.href;
+    }
+
+
+</script>
+</body>
+</html>
