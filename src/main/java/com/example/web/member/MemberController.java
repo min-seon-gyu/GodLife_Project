@@ -66,7 +66,7 @@ public class MemberController {
     @PostMapping("/findLoginId")
     public ResponseEntity findLoginId(@Valid @RequestBody MemberFindUsernameDto memberFindUsernameDto){
         Optional<Member> findMember = memberRepository.findTop1ByNameAndEmailAndIsOAuth(memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail(), false);
-        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         executorService.submit(() -> mailService.findId(memberFindUsernameDto.getEmail(), member.getUsername()));
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -42,7 +42,7 @@ public class MemberService {
     @Transactional
     public Long update(MemberUpdateDto memberUpdateDto, Long id) {
         Optional<Member> findMember = memberRepository.findById(id);
-        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         member.update(memberUpdateDto);
         return member.getId();
     }
@@ -50,7 +50,7 @@ public class MemberService {
     @Transactional
     public Long updatePassword(MemberUpdatePasswordDto memberUpdatePasswordDto, Long id){
         Optional<Member> findMember = memberRepository.findById(id);
-        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         member.changePassword(passwordService.encode(memberUpdatePasswordDto.getPassword()));
         return member.getId();
     }
@@ -58,14 +58,13 @@ public class MemberService {
     @Transactional
     public void delete(Long id) {
         Optional<Member> findMember = memberRepository.findById(id);
-        memberRepository.delete(findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다.")));
+        memberRepository.delete(findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다.")));
     }
 
     @Transactional
     public String findPassword(MemberFindPasswordDto memberFindPasswordDto) {
-        log.info("비밀번호 찾기 요청 - id : {}, name : {}, email : {}", memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail());
         Optional<Member> findMember = memberRepository.findTop1ByUsernameAndNameAndEmailAndIsOAuth(memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), false);
-        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         String password = passwordService.getRandom();
         member.changePassword(passwordService.encode(password));
 

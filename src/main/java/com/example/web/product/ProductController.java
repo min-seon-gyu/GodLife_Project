@@ -1,5 +1,7 @@
 package com.example.web.product;
 
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import com.example.web.security.MemberDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,37 +21,32 @@ public class ProductController {
     @PostMapping("/product")
     public ResponseEntity add(@AuthenticationPrincipal MemberDetails memberDetails,
                               @Valid @RequestBody ProductAddDto productAddDto){
-        if(validCheck(memberDetails)){
-            Long id = productService.add(productAddDto);
-            return ResponseEntity.ok(id);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        validCheck(memberDetails);
+        Long id = productService.add(productAddDto);
+        return ResponseEntity.ok(id);
     }
 
     @PatchMapping("/product")
     public ResponseEntity update(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @Valid @RequestBody ProductUpdateDto productUpdateDto){
-        if(validCheck(memberDetails)){
-            Long id = productService.update(productUpdateDto);
-            return ResponseEntity.ok(id);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        validCheck(memberDetails);
+        Long id = productService.update(productUpdateDto);
+        return ResponseEntity.ok(id);
     }
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails,
                                  @PathVariable(value = "id") Long id){
-        if(validCheck(memberDetails)){
-            productService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
-        }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        validCheck(memberDetails);
+        productService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    private boolean validCheck(MemberDetails memberDetails){
+    private void validCheck(MemberDetails memberDetails){
         Collection<? extends GrantedAuthority> authorities = memberDetails.getAuthorities();
         String authority = authorities.stream().toList().get(0).getAuthority();
-        System.out.println("authority = " + authority);
-        return authority.equals("ADMIN") ? true : false;
+        if(!authority.equals("ADMIN")) {
+            throw new RestApiException(ErrorCode.FORBIDDEN_ACCESS, "유효하지 않은 접근입니다.");
+        }
     }
 }

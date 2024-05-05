@@ -26,7 +26,7 @@ public class ProductService {
     @Transactional
     public Long update(ProductUpdateDto productUpdateDto) {
         Optional<Product> findProduct = productRepository.findById(productUpdateDto.getId());
-        Product product = findProduct.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 없습니다."));
+        Product product = findProduct.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 존재하지 않습니다."));
         product.update(productUpdateDto);
         return product.getId();
     }
@@ -34,6 +34,6 @@ public class ProductService {
     @Transactional
     public void delete(Long id) {
         Optional<Product> findProduct = productRepository.findById(id);
-        productRepository.delete(findProduct.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 없습니다.")));
+        productRepository.delete(findProduct.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 존재하지 않습니다.")));
     }
 }

@@ -16,6 +16,6 @@ public class MemberUpdatePasswordDto {
     private String passwordCheck;
 
     public void validPassword(){
-        if(!this.password.equals(this.passwordCheck)) throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 맞지 않습니다.");
+        if(!this.password.equals(this.passwordCheck)) throw new RestApiException(ErrorCode.BAD_REQUEST, "비밀번호 체크가 유효하지 않습니다.");
     }
 }

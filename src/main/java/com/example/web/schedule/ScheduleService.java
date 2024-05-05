@@ -25,7 +25,7 @@ public class ScheduleService {
     @Transactional
     public Long post(Long id, ScheduleAddDto scheduleAddDto) {
         Optional<Member> findMember = memberRepository.findById(id);
-        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
+        Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         Schedule schedule = Schedule.builder()
                 .member(member)
                 .content(scheduleAddDto.getContent())
@@ -37,7 +37,7 @@ public class ScheduleService {
     @Transactional
     public Long update(ScheduleUpdateDto scheduleUpdateDto){
         Optional<Schedule> findSchedule = scheduleRepository.findById(scheduleUpdateDto.getId());
-        Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다."));
+        Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 존재하지 않습니다."));
         schedule.changeContent(scheduleUpdateDto.getContent());
         schedule.initStatus();
         return schedule.getId();
@@ -46,7 +46,7 @@ public class ScheduleService {
     @Transactional
     public void delete(Long id) throws IOException {
         Optional<Schedule> findSchedule = scheduleRepository.findById(id);
-        scheduleRepository.delete(findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다.")));
+        scheduleRepository.delete(findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 존재하지 않습니다.")));
         SearchResponse<ScheduleDocument> search = elasticsearchClient.search(s -> s
                 .index("schedule")
                 .query(QueryBuilders.match().field("schedule_id").query(id).build()._toQuery()), ScheduleDocument.class);
@@ -69,7 +69,7 @@ public class ScheduleService {
     @Transactional
     public void success(Long id) {
         Optional<Schedule> findSchedule = scheduleRepository.findById(id);
-        Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 없습니다."));
+        Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 존재하지 않습니다."));
         schedule.success();
     }
 }
