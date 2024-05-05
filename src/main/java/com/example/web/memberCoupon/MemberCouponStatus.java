@@ -1,0 +1,12 @@
+package com.example.web.memberCoupon;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum MemberCouponStatus {
+    USED("사용됨"),
+    UNUSED("사용되지 않음");
+    private final String status;
+}
