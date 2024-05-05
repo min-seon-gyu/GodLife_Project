@@ -1,7 +1,8 @@
 package com.example.web.product;
 
 import com.example.web.common.JpaBaseEntity;
-import com.example.web.member.Member;
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,5 +34,19 @@ public class Product extends JpaBaseEntity {
         this.name = productUpdateDto.getName();
         this.quantity = productUpdateDto.getQuantity();
         this.price = productUpdateDto.getPrice();
+    }
+
+    public void addQuantity(Long quantity) {
+        this.quantity += quantity;
+    }
+
+    public void removeQuantity(Long quantity){
+        validate(quantity);
+        this.quantity -= quantity;
+    }
+
+    private void validate(Long quantity) {
+        Long restQuantity = this.quantity - quantity;
+        if(restQuantity < 0) throw new RestApiException(ErrorCode.BAD_REQUEST, "수량이 부족합니다.");
     }
 }
