@@ -25,7 +25,7 @@ public class Coupon extends JpaBaseEntity {
     private CouponType couponType;
 
     @Builder
-    public Coupon(String name, Long value, Long quantity, Long discountPrice, Long discountRate, CouponType couponType) {
+    public Coupon(String name, Long quantity, Long discountPrice, Long discountRate, CouponType couponType) {
         this.name = name;
         this.discountPrice = discountPrice;
         this.discountRate = discountRate;
