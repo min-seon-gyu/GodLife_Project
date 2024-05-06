@@ -84,19 +84,26 @@
 <!-- /container -->
 <script>
     function logout() {
-        fetch("/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        })
-        .then(res => {
-            if(res.status === 200){
-               window.location.href=window.location.href
-            }else{
-               alert("잠시 후 다시 시도해주세요.");
-            }
-        });
+                fetch("/logout", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    }
+                })
+                .then(res => {
+                    if(res.status === 200){
+                        window.location.href=window.location.href
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.code === 400){
+                        alert(data.message);
+                    }else {
+                        alert("잠시 후 다시 시도해주세요.");
+                    }
+                });
    }
 </script>
 </body>

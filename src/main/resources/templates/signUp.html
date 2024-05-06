@@ -90,11 +90,15 @@
                 address: address
             })
         })
-        .then(res => res.json())
+        .then(res => {
+           if(res.status === 200){
+               window.location.href="createSignUpSuccessView"
+               return;
+           }
+           return res.json();
+        })
         .then(data => {
-            if(data.code === 200){
-                window.location.href="createSignUpSuccessView"
-            }else if(data.code === 400){
+            if(data.code === 400){
                 alert(data.message);
             }else if(data.code === 500){
                 alert(data.message);
