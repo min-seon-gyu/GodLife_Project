@@ -1,6 +1,7 @@
 package com.example.web.memberCoupon;
 
 import com.example.web.common.JpaBaseEntity;
+import com.example.web.coupon.Coupon;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import com.example.web.member.Member;
@@ -19,12 +20,14 @@ import java.time.LocalDateTime;
 public class MemberCoupon extends JpaBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_COUPON_ID")
+    @Column(name = "MEMBER_COUPON_ID")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-    private Long couponId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COUPON_ID")
+    private Coupon coupon;
     private LocalDateTime issuedAt;
     private LocalDateTime expiredAt;
     private LocalDateTime usedAt;
@@ -32,9 +35,9 @@ public class MemberCoupon extends JpaBaseEntity {
     private MemberCouponStatus status;
 
     @Builder
-    public MemberCoupon(Member member, Long couponId, LocalDateTime issuedAt, LocalDateTime expiredAt) {
+    public MemberCoupon(Member member, Coupon coupon, LocalDateTime issuedAt, LocalDateTime expiredAt) {
         this.member = member;
-        this.couponId = couponId;
+        this.coupon = coupon;
         this.issuedAt = issuedAt;
         this.expiredAt = expiredAt;
         this.status = MemberCouponStatus.UNUSED;
