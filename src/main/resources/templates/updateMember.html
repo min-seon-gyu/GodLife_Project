@@ -82,15 +82,19 @@
                 address: address
             })
         })
-        .then(res => res.json())
+        .then(res => {
+           if(res.status === 200){
+               window.location.href=createUpdateMemberSuccessView;
+               return;
+           }
+           return res.json();
+        })
         .then(data => {
-            if(data.code === 200){
-                window.location.href="createUpdateMemberSuccessView"
-            }else if(data.code === 400){
-                alert(data.message);
-            }else {
-                alert("잠시 후 다시 시도해주세요.");
-            }
+           if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
         });
     }
 
@@ -105,21 +109,37 @@
                 username: 'username'
             })
         })
-        .then(res => res.json())
-        .then(data => {
-            if(data.code === 200){
+        .then(res => {
+           if(res.status === 200){
                 fetch("/logout", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                    },
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    }
+                })
+                .then(res => {
+                    if(res.status === 200){
+                        window.location.href="createDeleteMemberSuccessView"
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.code === 400){
+                        alert(data.message);
+                    }else {
+                        alert("잠시 후 다시 시도해주세요.");
+                    }
                 });
-                window.location.href="createUpdateMemberSuccessView"
-            }else if(data.code === 400){
-                alert(data.message);
-            }else {
-                alert("잠시 후 다시 시도해주세요.");
-            }
+           }
+           return res.json();
+        })
+        .then(data => {
+           if(data.code === 400){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
         });
     }
 </script>
