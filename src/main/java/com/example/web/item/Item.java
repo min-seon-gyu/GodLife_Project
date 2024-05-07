@@ -1,6 +1,8 @@
 package com.example.web.item;
 
 import com.example.web.common.JpaBaseEntity;
+import com.example.web.exception.ErrorCode;
+import com.example.web.exception.RestApiException;
 import com.example.web.member.Member;
 import com.example.web.product.Product;
 import jakarta.persistence.*;
@@ -34,11 +36,20 @@ public class Item extends JpaBaseEntity {
         this.quantity = quantity;
     }
 
+    public void use(){
+        validate();
+        this.quantity--;
+    }
     public void setMember(Member member){
         this.member = member;
     }
 
     public void addQuantity(Long quantity){
         this.quantity += quantity;
+    }
+
+    private void validate() {
+        Long restQuantity= this.quantity - 1;
+        if(restQuantity < 0) throw new RestApiException(ErrorCode.BAD_REQUEST, "수량이 부족합니다.");
     }
 }
