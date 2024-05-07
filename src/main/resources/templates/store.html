@@ -42,7 +42,7 @@
       <tr th:each="item : ${items}">
         <td th:text="${item.name}">이름</td>
         <td th:text="|${item.quantity}개|">수량</td>
-        <td class="use-btn" role="button" th:attr="id=${item.id}" style="font-weight : bold">사용</td>
+        <td class="use-btn" role="button" th:attr="id=${item.id}, name=${item.name}" style="font-weight : bold">사용</td>
       </tr>
       </tbody>
     </table>
@@ -118,12 +118,8 @@
         <input type="number" id="quantity" style="margin-top: 10px" class="form-control" maxlength="5"
                minlength="1">
         <br>
-        <label>사용할 쿠폰을 선택해주세요.</label>
-        <select class="form-select" aria-label="Default select example" id="memberCoupon">
-          <option value="0" selected>사용 안함</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
+        <label>보유 쿠폰 중 사용할 쿠폰을 선택해주세요.</label>
+        <select class="form-select" aria-label="Default select example" id="memberCoupon" style="margin-top: 10px">
         </select>
         <div align="right" style="margin-top: auto;">
           <button type="button" class="btn btn-secondary" onclick=calculator()>다음</button>
@@ -152,24 +148,40 @@
       </div>
     </div>
 
+    <div id="itemModal" class="modal">
+      <div class="modal-content" style="width: 500px; height: 300px">
+        <h5 style="display:inline; margin-top: 20px; font-weight : bold;" id="itemContent"></h5>
+        <div align="right" style="margin-top: auto;">
+          <button type="button" class="btn btn-secondary" id="close-item-btn">닫기</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 <!-- /container -->
 <script>
     function logout() {
-        fetch("/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        })
-        .then(res => {
-            if(res.status === 200){
-               window.location.href=window.location.href
-            }else{
-               alert("잠시 후 다시 시도해주세요.");
-            }
-        });
+                fetch("/logout", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    }
+                })
+                .then(res => {
+                    if(res.status === 200){
+                        window.location.href=window.location.href
+                    }else{
+                        return res.json();
+                    }
+                })
+                .then(data => {
+                    if(data.code === 400){
+                        alert(data.message);
+                    }else {
+                        alert("잠시 후 다시 시도해주세요.");
+                    }
+                });
    }
 
    <!--상품을 추가하는 함수-->
@@ -188,10 +200,16 @@
                 quantity: quantity
             })
        })
-       .then(res => res.json())
+       .then(res => {
+           if(res.status === 200){
+               window.location.href=window.location.href;
+           }else{
+               return res.json();
+           }
+       })
        .then(data => {
-           if(data.code === 200){
-               window.location.href=window.location.href
+           if(data.code === 400){
+               alert(data.message);
            }else if(data.code === 403){
                alert(data.message);
            }else {
@@ -219,13 +237,18 @@
                 quantity: quantity
             })
        })
-       .then(res => res.json())
+       .then(res => {
+           if(res.status === 200){
+               window.location.href=window.location.href;
+           }
+           else{
+               return res.json();
+           }
+       })
        .then(data => {
-           if(data.code === 200){
-               window.location.href=window.location.href
-           }else if(data.code === 403){
+           if(data.code === 400){
                alert(data.message);
-           }else if(data.code === 400){
+           }else if(data.code === 403){
                alert(data.message);
            }else {
                alert("잠시 후 다시 시도해주세요.");
@@ -237,37 +260,36 @@
    function calculator() {
        var price = document.getElementById("quantity").getAttribute("price");
        var quantity = document.getElementById("quantity").value;
-       var userCouponId = document.getElementById("memberCoupon").value;
-       fetch("/order/cost", {
-           method: "POST",
+       var memberCouponId = document.getElementById("memberCoupon").value;
+       fetch(`/order/cost?price=${price}&quantity=${quantity}&memberCouponId=${memberCouponId}`, {
+           method: "GET",
            headers: {
                "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-                price: price,
-                quantity: quantity,
-                userCouponId: userCouponId
-            })
+           }
        })
        .then(res => res.json())
        .then(data => {
-           if(data.code === 200){
-               buyModal.style.display = "block";
-               var buyContent = document.getElementById("buyContent");
-               document.getElementById("quantity").setAttribute("totalPrice", data);
-               buyContent.textContent = `결제 금액은 ${data}원 입니다.`;
-           }else if(data.code === 400){
-               alert(data.message);
-           }else {
-               alert("잠시 후 다시 시도해주세요.");
-           }
+               if(data.code === 400){
+                    alert(data.message);
+                    return;
+               }else if(data.code === undefined){
+                   buyModal.style.display = "block";
+                  var buyContent = document.getElementById("buyContent");
+                  document.getElementById("quantity").setAttribute("totalPrice", data.cost);
+                  buyContent.textContent = `결제 금액은 ${data.cost}원 입니다.`;
+                  return;
+               }else {
+                  alert("잠시 후 다시 시도해주세요.");
+                  return;
+               }
+
        });
    }
 
    <!--상품을 주문하는 함수-->
    function buy() {
        var productId = document.getElementById("quantity").getAttribute("product_id");
-       var userCouponId = document.getElementById("memberCoupon").value;
+       var memberCouponId = document.getElementById("memberCoupon").value;
        var totalPrice = document.getElementById("quantity").getAttribute("totalPrice").replace(/,/g, '');
        var totalQuantity = document.getElementById("quantity").value;
        fetch("/order", {
@@ -277,22 +299,26 @@
            },
            body: JSON.stringify({
                 productId: productId,
-                userCouponId: userCouponId,
+                memberCouponId: memberCouponId,
                 totalPrice: totalPrice,
                 totalQuantity: totalQuantity
             })
        })
-       .then(res => res.json())
-       .then(data => {
-           if(data.code === 200){
+       .then(res => {
+           if(res.status === 200){
                successModal.style.display = "block";
                buyModal.style.display = "none";
                calculatorModal.style.display = "none";
-               coupon.value = 0;
                quantity.value = 0;
-           }else if(data.code === 400){
+           }
+           else{
+               return res.json();
+           }
+       })
+       .then(data => {
+           if(data !== undefined && data.code === 400){
                alert(data.message);
-           }else {
+           }else if(data !== undefined && data.code !== 400){
                alert("잠시 후 다시 시도해주세요.");
            }
        });
@@ -300,8 +326,43 @@
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  var deleteButtons = document.querySelectorAll(".delete-btn");
+  //아이템 사용 버튼
+  var useButtons = document.querySelectorAll(".use-btn");
+  useButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+      var id = button.getAttribute("id");
+      var name = button.getAttribute("name");
+      fetch("/item/use", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+           body: JSON.stringify({
+                id: id
+            })
+      })
+      .then(res => {
+           if(res.status === 200){
+               itemModal.style.display = "block";
+               var itemContent = document.getElementById("itemContent");
+               itemContent.textContent = `${name}을 사용했습니다.`;
+           }
+           else{
+               return res.json();
+           }
+      })
+       .then(data => {
+           if(data !== undefined && data.code === 400){
+               alert(data.message);
+           }else if(data !== undefined && data.code !== 400){
+               alert("잠시 후 다시 시도해주세요.");
+           }
+      });
+    });
+  });
 
+  //상품 삭제 버튼
+  var deleteButtons = document.querySelectorAll(".delete-btn");
   deleteButtons.forEach(function(button) {
     button.addEventListener("click", function() {
       fetch(`/product/${button.getAttribute("id")}`, {
@@ -310,21 +371,26 @@ document.addEventListener("DOMContentLoaded", function() {
           "Content-Type": "application/json"
         }
       })
-      .then(res => res.json())
-      .then(data => {
-          if(data.code === 200){
-              window.location.href=window.location.href
-          }else if(data.code === 403){
-              alert(data.message);
-          }else {
-              alert("잠시 후 다시 시도해주세요.");
-          }
+      .then(res => {
+           if(res.status === 200){
+               window.location.href=window.location.href
+           }
+           else{
+               return res.json();
+           }
+      })
+       .then(data => {
+           if(data.code === 403){
+               alert(data.message);
+           }else {
+               alert("잠시 후 다시 시도해주세요.");
+           }
       });
     });
   });
 
+  //상품 구매 버튼
   var calculatorButtons = document.querySelectorAll(".calculator-btn");
-
   calculatorButtons.forEach(function(button) {
     button.addEventListener("click", function() {
       var id = button.getAttribute("id");
@@ -333,11 +399,46 @@ document.addEventListener("DOMContentLoaded", function() {
       quantity.setAttribute("product_id", id);
       quantity.setAttribute("price", price.replace(/,/g, ''));
       calculatorModal.style.display = "block";
+      fetch("/memberCoupon", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.json())
+       .then(data => {
+               if(data.code === 400){
+                    alert(data.message);
+                    return;
+               }else if(data.code === undefined){
+              var memberCoupon = document.getElementById("memberCoupon");
+              memberCoupon.innerHTML = "";
+
+              var defaultOption = document.createElement("option");
+              defaultOption.text = "사용 안함";
+              defaultOption.value = "0";
+              memberCoupon.add(defaultOption);
+
+              data.forEach(coupon => {
+                  var option = document.createElement("option");
+                  option.text = coupon.name;
+                  option.value = coupon.id;
+                  memberCoupon.add(option);
+              });
+
+              memberCoupon.value = "0";
+                  return;
+              }else {
+              console.log(data.code);
+                  alert("잠시 후 다시 시도해주세요.");
+                  return;
+               }
+      });
     });
   });
 
+  //상품 수정 버튼
   var updateButtons = document.querySelectorAll(".update-btn");
-
   updateButtons.forEach(function(button) {
     button.addEventListener("click", function() {
       var name = button.getAttribute("name");
@@ -389,11 +490,9 @@ document.addEventListener("DOMContentLoaded", function() {
     var closeCalculatorModalBtn = document.getElementById("close-calculator-btn");
     var calculatorModal = document.getElementById("calculatorModal");
     var quantity = document.getElementById("quantity");
-    var coupon = document.getElementById("memberCoupon");
 
     closeCalculatorModalBtn.onclick = function() {
         calculatorModal.style.display = "none";
-        coupon.value = 0;
         quantity.value = 0;
     }
 
@@ -409,15 +508,24 @@ document.addEventListener("DOMContentLoaded", function() {
     closeBuyModalBtn.onclick = function() {
         buyModal.style.display = "none";
         calculatorModal.style.display = "none";
-        coupon.value = 0;
         quantity.value = 0;
     }
 
+    //결제 완료 Modal
     var closeSuccessModalBtn = document.getElementById("close-success-btn");
     var successModal = document.getElementById("successModal");
 
     closeSuccessModalBtn.onclick = function() {
         successModal.style.display = "none";
+        window.location.href=window.location.href;
+    }
+
+    //아이템 사용 Modal
+    var closeItemModalBtn = document.getElementById("close-item-btn");
+    var itemModal = document.getElementById("itemModal");
+
+    closeItemModalBtn.onclick = function() {
+        itemModal.style.display = "none";
         window.location.href=window.location.href;
     }
 

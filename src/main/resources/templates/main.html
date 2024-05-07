@@ -147,9 +147,9 @@
                 .then(res => {
                     if(res.status === 200){
                         window.location.href=window.location.href
-                        return;
+                    }else{
+                        return res.json();
                     }
-                    return res.json();
                 })
                 .then(data => {
                     if(data.code === 400){
@@ -179,9 +179,9 @@
        .then(res => {
            if(res.status === 200){
                window.location.href=window.location.href
-               return;
+           }else{
+               return res.json();
            }
-           return res.json();
        })
        .then(data => {
             if(data.code === 400){
@@ -211,9 +211,9 @@
        .then(res => {
            if(res.status === 200){
                window.location.href=window.location.href
-               return;
+           }else{
+               return res.json();
            }
-           return res.json();
        })
        .then(data => {
             if(data.code === 400){
@@ -236,9 +236,9 @@
        .then(res => {
            if(res.status !== 200){
                alert("잠시 후 다시 시도해주세요.")
-               return;
+           }else{
+               return res.json();
            }
-           return res.json();
        })
         .then(data => {
            <!--기존 테이블 가져오기-->
@@ -280,9 +280,9 @@ document.addEventListener("DOMContentLoaded", function() {
       .then(res => {
            if(res.status === 200){
                window.location.href=window.location.href
-               return;
+           }else{
+               return res.json();
            }
-           return res.json();
        })
        .then(data => {
             if(data.code === 400){
@@ -313,9 +313,9 @@ document.addEventListener("DOMContentLoaded", function() {
       .then(res => {
            if(res.status === 200){
                window.location.href=window.location.href
-               return;
+           }else{
+               return res.json();
            }
-           return res.json();
       })
        .then(data => {
             if(data.code === 400){
@@ -379,9 +379,9 @@ document.addEventListener("DOMContentLoaded", function() {
        .then(res => {
            if(res.status !== 200){
                 alert("잠시 후 다시 시도해주세요.")
-                return;
+           }else{
+               return res.json();
            }
-           return res.json();
        })
        .then(data => {
            document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
