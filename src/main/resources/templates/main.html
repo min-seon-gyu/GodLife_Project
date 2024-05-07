@@ -138,19 +138,26 @@
         });
 
     function logout() {
-        fetch("/logout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        })
-        .then(res => {
-            if(res.status === 200){
-               window.location.href=window.location.href
-            }else{
-               alert("잠시 후 다시 시도해주세요.");
-            }
-        });
+                fetch("/logout", {
+                    method: "POST",
+                    headers: {
+                         "Content-Type": "application/json"
+                    }
+                })
+                .then(res => {
+                    if(res.status === 200){
+                        window.location.href=window.location.href
+                        return;
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.code === 400){
+                        alert(data.message);
+                    }else {
+                        alert("잠시 후 다시 시도해주세요.");
+                    }
+                });
    }
 
    <!--일정을 추가하는 함수-->
@@ -169,15 +176,19 @@
                 content: content
             })
        })
-       .then(res => res.json())
-       .then(data => {
-           if(data.code === 200){
+       .then(res => {
+           if(res.status === 200){
                window.location.href=window.location.href
-           }else if(data.code === 400){
-               alert(data.message);
-           }else {
-               alert("잠시 후 다시 시도해주세요.");
+               return;
            }
+           return res.json();
+       })
+       .then(data => {
+            if(data.code === 400){
+                alert(data.message);
+            }else {
+                alert("잠시 후 다시 시도해주세요.");
+            }
        });
    }
 
@@ -197,15 +208,19 @@
                 content: content
             })
        })
-       .then(res => res.json())
-       .then(data => {
-           if(data.code === 200){
+       .then(res => {
+           if(res.status === 200){
                window.location.href=window.location.href
-           }else if(data.code === 400){
-               alert(data.message);
-           }else {
-               alert("잠시 후 다시 시도해주세요.");
+               return;
            }
+           return res.json();
+       })
+       .then(data => {
+            if(data.code === 400){
+                alert(data.message);
+            }else {
+                alert("잠시 후 다시 시도해주세요.");
+            }
        });
    }
 
@@ -218,10 +233,15 @@
        fetch(`/search_schedule/${content}/${btn.getAttribute("index")}`, {
            method: "GET"
        })
-       .then(res => res.json())
-       .then(data => {
-           if(data.code === 200){
-                <!--기존 테이블 가져오기-->
+       .then(res => {
+           if(res.status !== 200){
+               alert("잠시 후 다시 시도해주세요.")
+               return;
+           }
+           return res.json();
+       })
+        .then(data => {
+           <!--기존 테이블 가져오기-->
                 const table = document.getElementById('modalData').querySelector('table');
                 <!--테이블에 행 추가하기-->
                 data.lst.forEach(item => {
@@ -242,10 +262,7 @@
                   else{
                        btn.style.display = "none";
                   }
-           }else {
-               alert("잠시 후 다시 시도해주세요.");
-           }
-       });
+        });
    }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -260,16 +277,20 @@ document.addEventListener("DOMContentLoaded", function() {
           "Content-Type": "application/json"
         }
       })
-      .then(res => res.json())
-      .then(data => {
-        if(data.code === 200){
-          window.location.href=window.location.href
-        }else if(data.code === 400){
-          alert(data.message);
-        }else{
-          alert("잠시 후 다시 시도해주세요.");
-        }
-      });
+      .then(res => {
+           if(res.status === 200){
+               window.location.href=window.location.href
+               return;
+           }
+           return res.json();
+       })
+       .then(data => {
+            if(data.code === 400){
+                alert(data.message);
+            }else {
+                alert("잠시 후 다시 시도해주세요.");
+            }
+       });
     });
   });
 
@@ -289,15 +310,19 @@ document.addEventListener("DOMContentLoaded", function() {
           date: date
         })
       })
-      .then(res => res.json())
-      .then(data => {
-        if(data.code === 200){
-          window.location.href=window.location.href
-        }else if(data.code === 400){
-          alert(data.message);
-        }else {
-          alert("잠시 후 다시 시도해주세요.");
-        }
+      .then(res => {
+           if(res.status === 200){
+               window.location.href=window.location.href
+               return;
+           }
+           return res.json();
+      })
+       .then(data => {
+            if(data.code === 400){
+                alert(data.message);
+            }else {
+                alert("잠시 후 다시 시도해주세요.");
+            }
       });
     });
   });
@@ -351,10 +376,15 @@ document.addEventListener("DOMContentLoaded", function() {
        fetch(`/search_schedule/${content}/0`, {
            method: "GET"
        })
-       .then(res => res.json())
+       .then(res => {
+           if(res.status !== 200){
+                alert("잠시 후 다시 시도해주세요.")
+                return;
+           }
+           return res.json();
+       })
        .then(data => {
-           if(res.status === 200){
-               document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
+           document.getElementById("subtitle").textContent = `'${content}'에 대한 검색 결과입니다.`;
            var btn = document.getElementById("more-find-btn");
 
            const table = document.createElement('table');
@@ -389,9 +419,6 @@ document.addEventListener("DOMContentLoaded", function() {
            modalDataContainer.innerHTML = ''; // 모달 내용 초기화
            modalDataContainer.appendChild(table);
            findModal.style.display = "block";
-           }else {
-               alert("잠시 후 다시 시도해주세요.");
-           }
        });
     }
 
