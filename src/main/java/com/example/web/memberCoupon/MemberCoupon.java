@@ -49,6 +49,11 @@ public class MemberCoupon extends JpaBaseEntity {
         usedAt = currentTime;
     }
 
+    public Long apply(Long cost){
+        Coupon coupon = getCoupon();
+        return coupon.costAfterDiscount(cost);
+    }
+
     public void setMember(Member member){
         this.member = member;
     }
@@ -57,8 +62,8 @@ public class MemberCoupon extends JpaBaseEntity {
         if (status.equals(MemberCouponStatus.USED)) {
             throw new RestApiException(ErrorCode.BAD_REQUEST, "이미 사용한 쿠폰입니다.");
         }
-        if (expiredAt.isBefore(currentTime)) {
+/*        if (expiredAt.isBefore(currentTime)) {
             throw new RestApiException(ErrorCode.BAD_REQUEST, "유효 기간이 종료된 쿠폰입니다.");
-        }
+        }*/
     }
 }
