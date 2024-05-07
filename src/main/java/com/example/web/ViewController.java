@@ -1,25 +1,31 @@
 package com.example.web;
 
+import com.example.web.common.NumberFormatConvert;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
+import com.example.web.item.ItemRepository;
+import com.example.web.item.ItemResponse;
 import com.example.web.member.Member;
 import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
+import com.example.web.product.ProductRepository;
+import com.example.web.product.ProductResponse;
 import com.example.web.redis.SignUpService;
 import com.example.web.schedule.ScheduleRepository;
 import com.example.web.schedule.ScheduleResponse;
 import com.example.web.security.MemberDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +40,8 @@ public class ViewController {
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
+    private final ItemRepository itemRepository;
+    private final ProductRepository productRepository;
 
     @GetMapping("/")
     public String init(@AuthenticationPrincipal MemberDetails memberDetails,
@@ -126,6 +134,22 @@ public class ViewController {
     @GetMapping("/createUpdatePasswordSuccessView")
     public String createUpdatePasswordSuccessView(){
         return "updatePasswordSuccess";
+    }
+
+    @GetMapping("/createStoreView")
+    public String createStoreView(@AuthenticationPrincipal MemberDetails memberDetails, Model model){
+        Collection<? extends GrantedAuthority> authorities = memberDetails.getAuthorities();
+        String authority = authorities.stream().toList().get(0).getAuthority();
+
+        Member member = memberRepository.findMemberById(memberDetails.getId()).orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 유저가 존재하지 않습니다."));
+        List<ProductResponse> products = productRepository.findAll().stream().map(p -> new ProductResponse(p)).toList();
+
+        model.addAttribute("name", memberDetails.getName());
+        model.addAttribute("point", NumberFormatConvert.convert(member.getPoint()));
+        model.addAttribute("authority", authority);
+        model.addAttribute("items", member.getItems().stream().map(i -> new ItemResponse(i)));
+        model.addAttribute("products", products);
+        return "store";
     }
 
     //회원가입 인증 요청
