@@ -32,6 +32,7 @@ public class Schedule extends JpaBaseEntity {
     }
 
     public void success(){
+        this.member.addPoint();
         this.status = true;
     }
 

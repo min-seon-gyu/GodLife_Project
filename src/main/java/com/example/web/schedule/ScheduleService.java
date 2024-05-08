@@ -68,7 +68,7 @@ public class ScheduleService {
 
     @Transactional
     public void success(Long id) {
-        Optional<Schedule> findSchedule = scheduleRepository.findById(id);
+        Optional<Schedule> findSchedule = scheduleRepository.findByScheduleId(id);
         Schedule schedule = findSchedule.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 일정이 존재하지 않습니다."));
         schedule.success();
     }

@@ -67,6 +67,10 @@ public class Member extends JpaBaseEntity {
         this.point -= point;
     }
 
+    public void addPoint(){
+        this.point += 500;
+    }
+
     public void setItems(Item... items){
         for (Item item : items) {
             this.items.add(item);
