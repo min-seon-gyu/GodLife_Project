@@ -3,11 +3,12 @@ package com.example.web;
 import com.example.web.common.NumberFormatConvert;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
-import com.example.web.item.ItemRepository;
 import com.example.web.item.ItemResponse;
 import com.example.web.member.Member;
 import com.example.web.member.MemberRepository;
 import com.example.web.member.MemberService;
+import com.example.web.order.OrderRepository;
+import com.example.web.order.OrderResponse;
 import com.example.web.product.ProductRepository;
 import com.example.web.product.ProductResponse;
 import com.example.web.redis.SignUpService;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,8 +42,8 @@ public class ViewController {
     private final SignUpService signUpService;
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
-    private final ItemRepository itemRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
 
     @GetMapping("/")
     public String init(@AuthenticationPrincipal MemberDetails memberDetails,
@@ -134,6 +136,14 @@ public class ViewController {
     @GetMapping("/createUpdatePasswordSuccessView")
     public String createUpdatePasswordSuccessView(){
         return "updatePasswordSuccess";
+    }
+
+    @GetMapping("/createOrderListView")
+    public String createOrderListView(@AuthenticationPrincipal MemberDetails memberDetails , Model model){
+        List<OrderResponse> orders = orderRepository.findOrdersById(memberDetails.getId()).stream().map(o -> new OrderResponse(o)).toList();
+        model.addAttribute("orders", orders);
+        model.addAttribute("name", memberDetails.getName());
+        return "orderList";
     }
 
     @GetMapping("/createStoreView")
