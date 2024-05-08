@@ -106,7 +106,7 @@
         <input type="number" id="updateQuantity" style="margin-top: 10px" class="form-control" maxlength="5"
                minlength="1">
         <div align="right" style="margin-top: 20px;">
-          <button type="button" class="btn btn-secondary" onclick=update()>추가</button>
+          <button type="button" class="btn btn-secondary" onclick=update()>수정</button>
           <button type="button" class="btn btn-secondary" id="close-update-btn">닫기</button>
         </div>
       </div>
@@ -276,7 +276,7 @@
                    buyModal.style.display = "block";
                   var buyContent = document.getElementById("buyContent");
                   document.getElementById("quantity").setAttribute("totalPrice", data.cost);
-                  buyContent.textContent = `결제 금액은 ${data.cost}원 입니다.`;
+                  buyContent.textContent = `결제 포인트 ${data.cost}원 입니다.`;
                   return;
                }else {
                   alert("잠시 후 다시 시도해주세요.");

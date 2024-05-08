@@ -47,6 +47,6 @@ public class Product extends JpaBaseEntity {
 
     private void validate(Long quantity) {
         Long restQuantity = this.quantity - quantity;
-        if(restQuantity < 0) throw new RestApiException(ErrorCode.BAD_REQUEST, "수량이 부족합니다.");
+        if(restQuantity < 0) throw new RestApiException(ErrorCode.BAD_REQUEST, "상품 수량이 부족합니다.");
     }
 }
