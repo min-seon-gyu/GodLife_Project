@@ -50,8 +50,8 @@
                     <button th:if="${past == 'false' && schedule.status == false}" class="success-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">
                         <p style="display:inline;">완료</p>
                     </button>
-                    <button th:if="${past == 'false'}" class="update-btn" th:attr="id=${schedule.id}, content=${schedule.content}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">수정</button>
-                    <button th:if="${past == 'false'}" class="delete-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">삭제</button>
+                    <button th:if="${past == 'false' && schedule.status == false}" class="update-btn" th:attr="id=${schedule.id}, content=${schedule.content}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">수정</button>
+                    <button th:if="${past == 'false' && schedule.status == false}" class="delete-btn" th:attr="id=${schedule.id}" style="border-radius: 15px; font-weight : bold; background-color: #f5ebe0">삭제</button>
                 </div>
             </div>
         </th:block>
