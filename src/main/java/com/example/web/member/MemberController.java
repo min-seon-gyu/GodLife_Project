@@ -3,6 +3,9 @@ package com.example.web.member;
 import com.example.web.common.MailService;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
+import com.example.web.item.ItemService;
+import com.example.web.memberCoupon.MemberCouponService;
+import com.example.web.order.OrderService;
 import com.example.web.redis.SignUpService;
 import com.example.web.schedule.ScheduleService;
 import com.example.web.security.MemberDetails;
@@ -25,6 +28,9 @@ public class MemberController {
     private final SignUpService signUpService;
     private final MailService mailService;
     private final ScheduleService scheduleService;
+    private final OrderService orderService;
+    private final ItemService itemService;
+    private final MemberCouponService memberCouponService;
     private final MemberRepository memberRepository;
 
     //회원가입 요청
@@ -58,6 +64,9 @@ public class MemberController {
     @DeleteMapping("/member")
     public ResponseEntity delete(@AuthenticationPrincipal MemberDetails memberDetails) throws IOException {
         scheduleService.deleteByMemberId(memberDetails.getId());
+        orderService.deleteByMemberId(memberDetails.getId());
+        itemService.deleteByMemberId(memberDetails.getId());
+        memberCouponService.deleteByMemberId(memberDetails.getId());
         memberService.delete(memberDetails.getId());
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -30,6 +30,11 @@ public class ItemService {
     }
 
     @Transactional
+    public void deleteByMemberId(Long id) {
+        itemRepository.deleteByMemberId(id);
+    }
+
+    @Transactional
     private Item getNewItem(Member member, Product product){
         Item item = Item.builder()
                 .member(member)

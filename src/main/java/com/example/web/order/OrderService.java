@@ -46,4 +46,9 @@ public class OrderService {
         orderRepository.save(order);
         return order.getId();
     }
+
+    @Transactional
+    public void deleteByMemberId(Long id) {
+        orderRepository.deleteByMemberId(id);
+    }
 }
