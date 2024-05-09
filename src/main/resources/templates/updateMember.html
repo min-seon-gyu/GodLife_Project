@@ -88,7 +88,7 @@
         })
         .then(res => {
            if(res.status === 200){
-               window.location.href=createUpdateMemberSuccessView;
+               window.location.href="createUpdateMemberSuccessView";
            }else{
                return res.json();
            }
