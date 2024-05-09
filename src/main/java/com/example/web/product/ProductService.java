@@ -24,6 +24,13 @@ public class ProductService {
     }
 
     @Transactional
+    public Product decreaseQuantity(Long id, Long quantity) {
+        Product product = productRepository.findByIdPessimisticLock(id).orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 존재하지 않습니다."));
+        product.decreaseQuantity(quantity);
+        return product;
+    }
+
+    @Transactional
     public Long update(ProductUpdateDto productUpdateDto) {
         Optional<Product> findProduct = productRepository.findById(productUpdateDto.getId());
         Product product = findProduct.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 상품이 존재하지 않습니다."));

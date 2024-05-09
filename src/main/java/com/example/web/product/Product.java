@@ -4,16 +4,14 @@ import com.example.web.common.JpaBaseEntity;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @DynamicUpdate
+@ToString
 public class Product extends JpaBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +34,13 @@ public class Product extends JpaBaseEntity {
         this.price = productUpdateDto.getPrice();
     }
 
-    public void addQuantity(Long quantity) {
+    public void increaseQuantity(Long quantity) {
         this.quantity += quantity;
     }
 
-    public void removeQuantity(Long quantity){
-        validate(quantity);
-        this.quantity -= quantity;
-    }
-
-    private void validate(Long quantity) {
+    public void decreaseQuantity(Long quantity){
         Long restQuantity = this.quantity - quantity;
         if(restQuantity < 0) throw new RestApiException(ErrorCode.BAD_REQUEST, "상품 수량이 부족합니다.");
+        this.quantity = restQuantity;
     }
 }

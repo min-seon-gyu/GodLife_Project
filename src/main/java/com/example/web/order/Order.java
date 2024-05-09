@@ -43,6 +43,6 @@ public class Order extends JpaBaseEntity {
     }
     public void refund(){
         this.status = OrderStatus.REFUND;
-        this.product.addQuantity(totalQuantity);
+        this.product.increaseQuantity(totalQuantity);
     }
 }
