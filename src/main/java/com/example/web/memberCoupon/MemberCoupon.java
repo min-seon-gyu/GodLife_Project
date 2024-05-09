@@ -2,6 +2,7 @@ package com.example.web.memberCoupon;
 
 import com.example.web.common.JpaBaseEntity;
 import com.example.web.coupon.Coupon;
+import com.example.web.coupon.CouponType;
 import com.example.web.exception.ErrorCode;
 import com.example.web.exception.RestApiException;
 import com.example.web.member.Member;
@@ -49,9 +50,16 @@ public class MemberCoupon extends JpaBaseEntity {
         usedAt = currentTime;
     }
 
-    public Long apply(Long cost){
+    public Long expectPoint(Long cost){
         Coupon coupon = getCoupon();
-        return coupon.costAfterDiscount(cost);
+        if(coupon.getCouponType().equals(CouponType.FIXED)){
+            return cost - coupon.getDiscountPrice() >= 0 ? cost - coupon.getDiscountPrice() : 0;
+        }
+        if(coupon.getCouponType().equals(CouponType.RATE)){
+            Long percent = 100l - coupon.getDiscountRate();
+            return cost * percent / 100;
+        }
+        throw new IllegalStateException("할인 정책이 존재하지 않습니다");
     }
 
     public void setMember(Member member){

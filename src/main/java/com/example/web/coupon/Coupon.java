@@ -32,17 +32,4 @@ public class Coupon extends JpaBaseEntity {
         this.quantity = quantity;
         this.couponType = couponType;
     }
-
-    public Long costAfterDiscount(Long cost){
-        if(couponType.equals(CouponType.FIXED)){
-            return cost - discountPrice >= 0 ? cost - discountPrice : 0;
-        }
-
-        if(couponType.equals(CouponType.RATE)){
-            Long percent = 100l - discountRate;
-            return cost * percent / 100;
-        }
-
-        throw new IllegalStateException("할인 정책이 존재하지 않습니다");
-    }
 }
