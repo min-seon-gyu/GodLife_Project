@@ -1,8 +1,8 @@
 # 갓생 프로젝트
 
-- #### 프로젝트 기간 : 2023년 11월 ~
-- #### 주제 : 일정 관리 사이트
-- #### 맡은 포지션 : 백엔드 서버 개발
+#### 프로젝트 기간 : 2023년 11월 ~
+#### 주제 : 일정 관리 사이트
+#### 맡은 포지션 : 백엔드 서버 개발
 
 #### 적용 기술
 - Java, Spring Boot를 이용한 API 개발
@@ -42,7 +42,7 @@
  
 ## 주요 구현 과정 및 실행 화면
 
-#### [갓생 사이트 프로젝트 v1 - 회원] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90)
+#### [갓생 사이트 프로젝트 v1 - 회원](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90)
 #### [갓생 사이트 프로젝트 v1 - 회원 가입, 로그인 개선] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90-%EA%B0%80%EC%9E%85-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B0%9C%EC%84%A0)
 #### [갓생 사이트 프로젝트 v1 - 일정] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EC%9D%BC%EC%A0%95)
 #### [갓생 사이트 프로젝트 v1 - 분산 락] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EB%B6%84%EC%82%B0-%EB%9D%BD-3fqv1vay)
