@@ -3,14 +3,16 @@
 - #### 프로젝트 기간 : 2023년 11월 ~
 - #### 주제 : 일정 관리 사이트
 - #### 맡은 포지션 : 백엔드 서버 개발
-- #### 적용 기술
-    - #### Java, Spring Boot를 이용한 API 개발
-    - #### Jenkins, Docker를 활용하여 CI/CD 파이프라인 구현
-    - #### Spring Security, OAuth2를 활용하여 인증/인가 적용
-    - #### Redisson을 활용하여 분산 락 적용
-    - #### Pessimistic Lock을 활용하여 동시성 문제 해결
-    - #### 엘라스틱 서치를 활용한 검색 기능 및 페이징 처리 구현
-    - #### 로그 설정 적용
+
+
+#### 적용 기술
+- Java, Spring Boot를 이용한 API 개발
+- Jenkins, Docker를 활용하여 CI/CD 파이프라인 구현
+- Spring Security, OAuth2를 활용하여 인증/인가 적용
+- Redisson을 활용하여 분산 락 적용
+- Pessimistic Lock을 활용하여 동시성 문제 해결
+- 엘라스틱 서치를 활용한 검색 기능 및 페이징 처리 구현
+- 로그 설정 적용
  
 #### v2 Service(2024.04 ~ )
 - 일정 기능
