@@ -132,7 +132,7 @@ public class AopForTransaction {
 
 앞서 성능 향상을 위한 방안으로 두 가지를 경험해 보았습니다. 두 방안을 비교했을 때 ElasticSearch를 활용한 방안이 성능적으로 더욱 우수한 것을 확인하였습니다. 또한 한글 형태소 분석기를 통해 검색의 품질도 ElasticSearch가 우수하였습니다. 이러한 이유로 검색 기능을 기존 관계형 데이터베이스 기반에서 ElasticSearch 기반으로 변경하였고 기존 문제를 개선할 수 있었습니다.
 
-```
+```java
 @Configuration
 public class ElasticSearchConfig{
     @Value("${spring.elasticsearch.hostname}")
