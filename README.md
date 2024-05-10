@@ -40,9 +40,19 @@
     - 일정을 키워드로 검색할 수 있습니다.
     - 검색 결과가 많은 경우 더보기 기능을 사용할 수 있습니다.
  
-## 구현 내용
+## 주요 구현 과정 및 실행 화면
 
-####[갓생 사이트 프로젝트 v1 - 회원] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90)
+#### [갓생 사이트 프로젝트 v1 - 회원] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90)
+#### [갓생 사이트 프로젝트 v1 - 회원 가입, 로그인 개선] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90-%EA%B0%80%EC%9E%85-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B0%9C%EC%84%A0)
+#### [갓생 사이트 프로젝트 v1 - 일정] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EC%9D%BC%EC%A0%95)
+#### [갓생 사이트 프로젝트 v1 - 분산 락] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EB%B6%84%EC%82%B0-%EB%9D%BD-3fqv1vay)
+#### [갓생 사이트 프로젝트 v1 - ELK 스택 도입] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-ELK-%EC%8A%A4%ED%83%9D-%EB%8F%84%EC%9E%85)
+#### [갓생 사이트 프로젝트 v1 - 일정 검색] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EC%9D%BC%EC%A0%95-%EA%B2%80%EC%83%89)
+#### [갓생 사이트 프로젝트 v1 - 일정 변경] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%EC%9D%BC%EC%A0%95-%EB%B3%80%EA%B2%BD)
+#### [갓생 사이트 프로젝트 v1 - 회원 탈퇴, 일정 삭제 개선] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v1-%ED%9A%8C%EC%9B%90-%ED%83%88%ED%87%B4-%EC%9D%BC%EC%A0%95-%EC%82%AD%EC%A0%9C-%EA%B0%9C%EC%84%A0)
+#### [갓생 사이트 프로젝트 v2 - 상점] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v2-%EC%83%81%EC%A0%90)
+#### [갓생 사이트 프로젝트 v2 - 구매, 포인트, 쿠폰, 보유쿠폰] (https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v2-%EA%B5%AC%EB%A7%A4-%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%BF%A0%ED%8F%B0)
+
     
 ## 프로젝트를 진행하면서 배운 점
 
