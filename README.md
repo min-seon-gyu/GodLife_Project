@@ -193,14 +193,14 @@ JMeter 성능 테스트 결과는 다음과 같습니다. (1000개의 요청을 
 
 **MySQL**
 
-![1.PNG](https://prod-files-secure.s3.us-west-2.amazonaws.com/ba1a3245-2057-41c0-a15f-8e0ff9e04e75/ea40ce1e-1918-4e52-a982-4676eb458220/1.png)
+![](https://velog.velcdn.com/images/gcael/post/fc2db863-8a86-4b4d-afc8-7eeb8bf4a352/image.png)
 
 **MySQL(전문검색)**
 
-![a.PNG](https://prod-files-secure.s3.us-west-2.amazonaws.com/ba1a3245-2057-41c0-a15f-8e0ff9e04e75/78cf2a05-db53-409d-a104-6ef1e79fa457/a.png)
+![](https://velog.velcdn.com/images/gcael/post/f42e2391-a4e3-49ec-b7af-51fd1026bdaa/image.png)
 
 **Elasticsearch**
 
-![b.PNG](https://prod-files-secure.s3.us-west-2.amazonaws.com/ba1a3245-2057-41c0-a15f-8e0ff9e04e75/17ad018c-b2bb-462f-b9b5-a99f79d76d60/b.png)
+![](https://velog.velcdn.com/images/gcael/post/6b2cafd4-4f05-4d9e-84a9-2bb0f814b3a7/image.png)
 
 전문검색을 활용하면 2배 가까이 ElasticSearch을 활용하면 90배 가까이 성능을 향샹시킬 수 있는 것을 확인할 수 있습니다.
