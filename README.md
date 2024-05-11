@@ -6,6 +6,9 @@
 
 ## 프로젝트 설명
 
+#### ERD 설계
+![](https://velog.velcdn.com/images/gcael/post/79f4dbee-cbec-4a13-92ee-5e6acc617ed1/image.png)
+
 #### 적용 기술
 - Java, Spring Boot를 이용한 API 개발
 - Jenkins, Docker를 활용하여 CI/CD 파이프라인 구현
