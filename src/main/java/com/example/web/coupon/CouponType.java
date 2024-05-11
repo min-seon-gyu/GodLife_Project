@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 public enum CouponType {
     FIXED("고정"),
     RATE("비율");
-    private final String type;
+    private final String name;
 }

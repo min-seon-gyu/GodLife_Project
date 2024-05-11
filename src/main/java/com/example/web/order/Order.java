@@ -30,7 +30,7 @@ public class Order extends JpaBaseEntity {
     private Long totalPrice;
     private Long totalQuantity;
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.ORDER;
 
     @Builder
     public Order(Member member, Long userCouponId, Product product, Long totalPrice, Long totalQuantity) {
@@ -39,7 +39,6 @@ public class Order extends JpaBaseEntity {
         this.userCouponId = userCouponId;
         this.totalPrice = totalPrice;
         this.totalQuantity = totalQuantity;
-        this.status = OrderStatus.ORDER;
     }
     public void refund(){
         this.status = OrderStatus.REFUND;

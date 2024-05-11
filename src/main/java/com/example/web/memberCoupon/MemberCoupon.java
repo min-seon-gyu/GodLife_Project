@@ -33,7 +33,7 @@ public class MemberCoupon extends JpaBaseEntity {
     private LocalDateTime expiredAt;
     private LocalDateTime usedAt;
     @Enumerated(EnumType.STRING)
-    private MemberCouponStatus status;
+    private MemberCouponStatus status = MemberCouponStatus.UNUSED;
 
     @Builder
     public MemberCoupon(Member member, Coupon coupon, LocalDateTime issuedAt, LocalDateTime expiredAt) {
@@ -41,7 +41,6 @@ public class MemberCoupon extends JpaBaseEntity {
         this.coupon = coupon;
         this.issuedAt = issuedAt;
         this.expiredAt = expiredAt;
-        this.status = MemberCouponStatus.UNUSED;
     }
 
     public void use(LocalDateTime currentTime){
@@ -52,10 +51,10 @@ public class MemberCoupon extends JpaBaseEntity {
 
     public Long expectPoint(Long cost){
         Coupon coupon = getCoupon();
-        if(coupon.getCouponType().equals(CouponType.FIXED)){
+        if(coupon.getType().equals(CouponType.FIXED)){
             return cost - coupon.getDiscountPrice() >= 0 ? cost - coupon.getDiscountPrice() : 0;
         }
-        if(coupon.getCouponType().equals(CouponType.RATE)){
+        if(coupon.getType().equals(CouponType.RATE)){
             Long percent = 100l - coupon.getDiscountRate();
             return cost * percent / 100;
         }

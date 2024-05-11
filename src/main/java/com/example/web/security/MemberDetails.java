@@ -1,5 +1,7 @@
 package com.example.web.security;
 
+import com.example.web.member.MemberController;
+import com.example.web.member.MemberType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,18 +14,18 @@ import java.util.Map;
 public class MemberDetails implements UserDetails, OAuth2User {
 
     private final MemberSecurityDto member;
-    private final boolean isOAuth2;
+    private final MemberType type;
     private Map<String, Object> attributes;
 
     //일반 로그인
     public MemberDetails(MemberSecurityDto member) {
-        isOAuth2 = false;
+        type = MemberType.BASIC;
         this.member = member;
     }
 
     //OAuth 로그인
     public MemberDetails(MemberSecurityDto member, Map<String, Object> attributes) {
-        isOAuth2 = true;
+        type = MemberType.OAUTH;
         this.member = member;
         this.attributes = attributes;
     }
@@ -33,7 +35,7 @@ public class MemberDetails implements UserDetails, OAuth2User {
         return attributes;
     }
 
-    public boolean isOAuth() { return isOAuth2;}
+    public boolean isBasic() { return type.equals(MemberType.BASIC);}
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

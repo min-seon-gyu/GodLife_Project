@@ -6,10 +6,10 @@ import lombok.Data;
 public class ScheduleResponse {
     private Long id;
     private String content;
-    private boolean status;
+    private String status;
     public ScheduleResponse(Schedule schedule){
         this.id = schedule.getId();
         this.content = schedule.getContent();
-        this.status = schedule.isStatus();
+        this.status = schedule.getStatus().getName();
     }
 }

@@ -176,7 +176,7 @@ public class ViewController {
         Optional<Member> findMember = memberRepository.findTop1ByUsername(memberDetails.getUsername());
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 없습니다."));
         model.addAttribute("member", member);
-        model.addAttribute("isBasic", !memberDetails.isOAuth());
+        model.addAttribute("isBasic", memberDetails.isBasic());
         return "updateMember";
     }
 

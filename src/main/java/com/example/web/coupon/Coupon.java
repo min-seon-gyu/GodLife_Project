@@ -22,14 +22,14 @@ public class Coupon extends JpaBaseEntity {
     private Long discountRate;
     private Long quantity;
     @Enumerated(EnumType.STRING)
-    private CouponType couponType;
+    private CouponType type;
 
     @Builder
-    public Coupon(String name, Long quantity, Long discountPrice, Long discountRate, CouponType couponType) {
+    public Coupon(String name, Long quantity, Long discountPrice, Long discountRate, CouponType type) {
         this.name = name;
         this.discountPrice = discountPrice;
         this.discountRate = discountRate;
         this.quantity = quantity;
-        this.couponType = couponType;
+        this.type = type;
     }
 }

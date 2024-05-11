@@ -33,7 +33,7 @@ public class MemberService {
                 .name((String) data.get("name"))
                 .password(passwordService.encode((String) data.get("password")))
                 .role(MemberRole.USER)
-                .isOAuth(false)
+                .type(MemberType.BASIC)
                 .point(0l)
                 .build();
         return memberRepository.save(member).getId();
@@ -61,7 +61,7 @@ public class MemberService {
 
     @Transactional
     public String findPassword(MemberFindPasswordDto memberFindPasswordDto) {
-        Member member = memberRepository.findTop1ByUsernameAndNameAndEmailAndIsOAuth(memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), false)
+        Member member = memberRepository.findTop1ByUsernameAndNameAndEmailAndType(memberFindPasswordDto.getUsername(), memberFindPasswordDto.getName(), memberFindPasswordDto.getEmail(), MemberType.BASIC)
                 .orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
         String password = passwordService.getRandom();
         member.changePassword(passwordService.encode(password));
@@ -77,6 +77,6 @@ public class MemberService {
 
 
     private boolean validationCheck(MemberSignUpDto memberSignUpDto){
-        return memberRepository.existsByUsername(memberSignUpDto.getUsername()) || memberRepository.existsByEmailAndIsOAuth(memberSignUpDto.getEmail(), false);
+        return memberRepository.existsByUsername(memberSignUpDto.getUsername()) || memberRepository.existsByEmailAndType(memberSignUpDto.getEmail(), MemberType.BASIC);
     }
 }

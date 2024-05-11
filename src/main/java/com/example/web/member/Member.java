@@ -37,11 +37,12 @@ public class Member extends JpaBaseEntity {
     private MemberRole role;
     private String provider;
     private String providerId;
-    private boolean isOAuth;
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
     private Long point;
 
     @Builder
-    private Member(String username, String password, String name, String email, String address, MemberRole role, String provider, String providerId, boolean isOAuth, Long point){
+    private Member(String username, String password, String name, String email, String address, MemberRole role, String provider, String providerId, MemberType type, Long point){
         this.username = username;
         this.password = password;
         this.name = name;
@@ -50,7 +51,7 @@ public class Member extends JpaBaseEntity {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
-        this.isOAuth = isOAuth;
+        this.type = type;
         this.point = point;
     }
 

@@ -20,7 +20,7 @@ public class Schedule extends JpaBaseEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
     private String content;
-    private boolean status;
+    private ScheduleStatus status = ScheduleStatus.INCOMPLETE;
     @Temporal(TemporalType.DATE)
     private LocalDate localDate;
 
@@ -33,11 +33,11 @@ public class Schedule extends JpaBaseEntity {
 
     public void success(){
         this.member.addPoint();
-        this.status = true;
+        this.status = ScheduleStatus.COMPLETE;
     }
 
     public void initStatus(){
-        this.status = false;
+        this.status = ScheduleStatus.INCOMPLETE;
     }
 
     public void changeContent(String content){
