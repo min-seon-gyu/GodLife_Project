@@ -24,7 +24,7 @@ public class ScheduleDocument {
     @JsonSetter("content")
     private String content;
     @JsonSetter("status")
-    private Boolean status;
+    private String status;
     @JsonSetter("local_date")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)

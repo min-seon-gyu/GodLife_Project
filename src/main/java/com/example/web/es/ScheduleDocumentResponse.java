@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class ScheduleDocumentResponse {
     private LocalDate localDate;
     private String content;
-    private boolean status;
+    private String status;
 
     public ScheduleDocumentResponse(ScheduleDocument scheduleDocument){
         this.content = scheduleDocument.getContent();

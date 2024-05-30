@@ -20,6 +20,7 @@ public class Schedule extends JpaBaseEntity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
     private String content;
+    @Enumerated(EnumType.STRING)
     private ScheduleStatus status = ScheduleStatus.INCOMPLETE;
     @Temporal(TemporalType.DATE)
     private LocalDate localDate;
