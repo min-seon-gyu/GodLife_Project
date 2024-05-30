@@ -6,6 +6,9 @@
 
 ## 프로젝트 설명
 
+#### ERD 설계
+![](https://velog.velcdn.com/images/gcael/post/79f4dbee-cbec-4a13-92ee-5e6acc617ed1/image.png)
+
 #### 적용 기술
 - Java, Spring Boot를 이용한 API 개발
 - Jenkins, Docker를 활용하여 CI/CD 파이프라인 구현
@@ -121,9 +124,9 @@ public class AopForTransaction {
 
 상점에서는 구매할 수 있는 상품에는 수량이 있습니다. 그렇기 때문에 많은 유저가 동시에 구매를 하는 가정에서 동시성 문제가 발생할 수 있습니다. 
 
-동시성 문제를 해결하는 방법 중에는 격리 수준 설정과 비관적 락이 있습니다. 격리 수준 설정의 경우는 데이터 무결성이 가장 중요할 때 많이 사용되며, 비관적 락의 경우는 성능이 중요할 때 많이 사용됩니다. 만일 금융 관련 서비스 였다면 격리 수준 설정을 통해 문제를 해결하겠지만, 상품 구매 서비스의 경우에는 비관적 락을 사용했습니다. 이처럼 성능과 무결성 트레이드 오브 관계를 서비스의 따라 적용하면 될 것 같습니다.
+동시성 문제를 해결하는 방법 중에는 격리 수준 설정과 비관적 락이 있습니다. 격리 수준 설정의 경우는 데이터 무결성이 중요할 때 많이 사용되며, 비관적 락의 경우는 성능이 중요할 때 많이 사용됩니다. 만일 금융 관련 서비스에서의 동시성 문제라면 격리 수준 설정을 통해 문제를 해결하겠지만, 상품 구매 서비스는 비관적 락을 사용해도 괜찮다고 판단하였습니다. 이처럼 성능과 무결성 사이에 트레이드 오브를 서비스의 따라 적용하면 될 것 같습니다.
 
-비관적 락의 경우 JPA에서 지원하고 있으며 대표적으로 PESSIMISTIC_WRITE, PESSIMISTIC_READ 두 타입이 존재합니다. PESSIMISTIC_READ의 경우에는 ‘SELECT ... FOR SHARE’ 방식으로 동작하며 PESSIMISTIC_WRITE는 ‘SELECT ... FOR UPDATE’ 방식으로 동작합니다. 현재 서비스에서는 상품의 수량 데이터가 수정되기 때문에 PESSIMISTIC_WRITE를 사용하여 @Lock(LockModeType.PESSIMISTIC_WRITE)처럼 어노테이션 형태로 사용할 수 있습니다.
+비관적 락은 JPA에서 지원하고 있으며 PESSIMISTIC_READ, PESSIMISTIC_WRITE 타입이 존재합니다. PESSIMISTIC_READ의 경우에는 ‘SELECT ... FOR SHARE’ 방식으로 동작하며 PESSIMISTIC_WRITE는 ‘SELECT ... FOR UPDATE’ 방식으로 동작합니다. 현재 서비스에서는 데이터의 값이 수정되기 때문에 PESSIMISTIC_WRITE를 사용하였으며 @Lock(LockModeType.PESSIMISTIC_WRITE)처럼 어노테이션 형태로 사용할 수 있습니다.
 
 ```java
 public interface ProductRepository extends JpaRepository<Product, Long> {
