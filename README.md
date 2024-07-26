@@ -7,7 +7,7 @@
 ## 프로젝트 설명
 
 #### 아키텍처 설계
-![캡처](https://github.com/user-attachments/assets/78554fc6-35e9-4a64-b744-60f55f66899f)
+![캡처](https://github.com/user-attachments/assets/a7a5121e-dd4c-45cf-9c68-5bc543b9cd91)
 
 #### ERD 설계
 ![](https://velog.velcdn.com/images/gcael/post/79f4dbee-cbec-4a13-92ee-5e6acc617ed1/image.png)
