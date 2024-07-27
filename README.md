@@ -1,8 +1,20 @@
 # 갓생 프로젝트
-
-- **프로젝트 기간 : 2023년 11월 ~ 2024년 04월**  
-- **주제 : 일정 관리 사이트**  
-- **맡은 포지션 : 백엔드 서버 개발**  
+- **기간 : 2023년 11월 - 2024년 04월**
+- **담당 : 갓생 사이트 화면 구현 및 백엔드 API 개발**
+- **참여 인원 : 1명**
+- **개발 환경**
+    - **언어 : Java 17, JavaScript**
+    - **프레임워크 : Spring Boot 3.2.0, Spring Security**
+    - **데이터베이스 : MySQL, Redis**
+    - **도구 : Docker, Jenkins, Elasticsearch, Logstash**
+- **주요 구현**
+    - **Java, Spring Boot를 이용한 RESTful API 설계**
+    - **Spring Data JPA 적용**
+    - **Spring Security, OAuth2를 활용한 세션 방식 인증/인가 적용**
+    - **Redisson을 활용하여 분산 락 적용**
+    - **Elasticsearch를 활용한 검색 기능 및 페이징 처리 구현**
+    - **Pessimistic Lock을 활용하여 동시성 문제 해결**
+    - **Jenkins, Docker를 활용하여 자동 배포 파이프라인 구현**
 
 ## 프로젝트 설명
 
@@ -11,15 +23,6 @@
 
 #### ERD 설계
 ![](https://velog.velcdn.com/images/gcael/post/79f4dbee-cbec-4a13-92ee-5e6acc617ed1/image.png)
-
-#### 적용 기술
-- Java, Spring Boot를 이용한 API 개발
-- Jenkins, Docker를 활용하여 CI/CD 파이프라인 구현
-- Spring Security, OAuth2를 활용하여 인증/인가 적용
-- Redisson을 활용하여 분산 락 적용
-- Pessimistic Lock을 활용하여 동시성 문제 해결
-- 엘라스틱 서치를 활용한 검색 기능 및 페이징 처리 구현
-- 로그 설정 적용
  
 #### 구현 기능
 - **회원 기능**
