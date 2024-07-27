@@ -135,13 +135,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByIdPessimisticLock(@Param("id") Long id);
 }
 ```
-### 검색기능 향상
+### ElasticSearch
 
 갓생 사이트에서는 일정 검색 기능이 있습니다. 해당 기능은 관계형 데이터베이스 기반으로 구현되어 있으며 ‘더 보기’ 방식 페이징 처리가 되어있습니다. 하지만 JMeter를 사용하여 성능테스트를 해본 결과 성능이 저조하다는 것을 확인하였습니다. 이러한 성능을 개선하기 위하여 다음과 같은 방안을 적용해보았습니다.
 
 먼저 MySQL의 전문검색을 활용해보았습니다. 일반적인 조건절에서는 인덱스를 활용하여 성능을 개선할 수 있지만 해당 기능은 LIKE 연산을 사용하기 때문에 인덱스를 활용한 성능 개선이 어려워 전문검색을 활용하였고 그 결과 기존 성능의 2배 빠른 성능을 가져올 수 있었습니다. 
 
-다음으로는 ElasticSearch를 활용하여 성능을 올려보았습니다. ElasticSearch는 대표적인 검색 엔진으로 역색인 방식과 샤드를 활용하여 성능이 뛰어나다는 장점이 있습니다. 또한 하나의 쿼리로 카운트까지 알 수 있는 장점이 있습니다. ElasticSearch을 적용함으로써 발생하는 MySQL과의 동기화 문제는 Logstash의 파이프라인을 활용하여 처리하였습니다. ElasticSearch을 적용한 후에 성능테스트를 해본 결과 기존보다 90배 빠른 성능을 가져왔습니다.
+다음으로는 ElasticSearch를 활용하여 성능을 올려보았습니다. ElasticSearch는 대표적인 검색 엔진으로 역색인 방식과 샤드를 활용하여 성능이 뛰어나다는 장점이 있습니다. 또한 하나의 쿼리로 카운트까지 알 수 있는 장점이 있습니다. ElasticSearch을 적용함으로써 발생하는 MySQL과의 동기화 문제는 Logstash의 파이프라인을 활용하여 처리하였습니다.
 
 앞서 성능 향상을 위한 방안으로 두 가지를 경험해 보았습니다. 두 방안을 비교했을 때 ElasticSearch를 활용한 방안이 성능적으로 더욱 우수한 것을 확인하였습니다. 또한 한글 형태소 분석기를 통해 검색의 품질도 ElasticSearch가 우수하였습니다. 이러한 이유로 검색 기능을 기존 관계형 데이터베이스 기반에서 ElasticSearch 기반으로 변경하였고 기존 문제를 개선할 수 있었습니다.
 
@@ -202,18 +202,30 @@ public ScheduleDocumentPaging find(@AuthenticationPrincipal MemberDetails member
 }
 ```
 
-JMeter 성능 테스트 결과는 다음과 같습니다. (1000개의 요청을 동시에 한 경우입니다.)
+## 성능 개선
 
-**MySQL**
+### 조회 기능 개선(인덱스 설계, 쿼리 최적화)
+조회 요청에서의 조건 컬럼을 인덱스 설정 및 불필요한 조인 제거, 조회 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
 
-![](https://velog.velcdn.com/images/gcael/post/fc2db863-8a86-4b4d-afc8-7eeb8bf4a352/image.png)
+**[nGrinder]**
 
-**MySQL(전문검색)**
+인덱스 설계, 쿼리 최적화 전
+![노인덱스](https://github.com/user-attachments/assets/db17a94e-3c54-4be9-a86d-329abbd60e23)
 
-![](https://velog.velcdn.com/images/gcael/post/f42e2391-a4e3-49ec-b7af-51fd1026bdaa/image.png)
+인덱스 설계, 쿼리 최적화 후
+![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
 
-**Elasticsearch**
 
-![](https://velog.velcdn.com/images/gcael/post/6b2cafd4-4f05-4d9e-84a9-2bb0f814b3a7/image.png)
+### 검색 기능 개선(엘라스틱 서치)
+엘라스틱 서치를 도입하여 일정 검색 기능을 구현, 검색 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
 
-전문검색을 활용하면 2배 가까이 ElasticSearch을 활용하면 90배 가까이 성능을 향샹시킬 수 있는 것을 확인할 수 있습니다.
+**[JMeter]**
+
+MySQL 전문검색
+![mysql](https://github.com/user-attachments/assets/71e30405-942f-459a-ab22-f07b6589f446)
+
+엘라스틱 서치
+![엘라스틱서치](https://github.com/user-attachments/assets/4fc4bbcf-6f3d-42d0-977d-fbd23ec225d8)
+
+
+
