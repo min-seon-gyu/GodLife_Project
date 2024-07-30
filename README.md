@@ -58,10 +58,24 @@
 
 ### Redisson을 활용하여 분산 락 적용
 
+- 멀티 프로세스 환경에서 프로세스 간 데이터 공유 문제를 Redis Lock을 이용해 동시성 제어 구현
+    - pub/sub을 이용해 Lock 획득을 시도하는 RedissonClient를 통해 CPU 낭비 방지
+
+### 조회 기능 개선(인덱스 설계)
+
+- 조회 요청에서 사용되는 조건 컬럼에 복합 인덱스를 설정하여 조회 기능 개선
+
+**[nGrinder]**
+
+인덱스 설계 전
+![노인덱스](https://github.com/user-attachments/assets/db17a94e-3c54-4be9-a86d-329abbd60e23)
+
+인덱스 설계 후
+![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
+
 ### Spring Security, OAuth2를 활용한 세션 방식 인증/인가 적용
 
 ### Elasticsearch를 활용한 검색 기능 및 페이징 처리 구현
-엘라스틱 서치를 도입하여 일정 검색 기능을 구현, 검색 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
 
 **[JMeter]**
 
@@ -73,19 +87,12 @@ MySQL 전문검색
 
 ### Pessimistic Lock을 활용하여 동시성 문제 해결
 
-### Jenkins, Docker를 활용하여 자동 배포 파이프라인 구현
+- 
+
+### CI/CD 환경 구축
+
+- Jenkins, Docker, Docker Hub를 활용하여 테스트-빌드-배포 자동화
 
 ### 로그 설정
 
-### 조회 기능 개선(인덱스 설계)
-
-- 조회 요청에서의 조건 컬럼에 인덱스 설정
-
-**[nGrinder]**
-
-인덱스 설계 전
-![노인덱스](https://github.com/user-attachments/assets/db17a94e-3c54-4be9-a86d-329abbd60e23)
-
-인덱스 설계 후
-![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
-
+- 실행 환경별 로그 출력 설정, 로그 레벨별 파일 저장 설정
