@@ -24,7 +24,7 @@
 #### ERD 설계
 ![](https://velog.velcdn.com/images/gcael/post/79f4dbee-cbec-4a13-92ee-5e6acc617ed1/image.png)
  
-#### 구현 기능
+#### 서비스 기능
 - **회원 기능**
     - 회원가입 시 이메일 인증이 필요합니다.
     - 회원수정, 회원탈퇴, 로그인, 로그아웃을 할 수 있습니다.
@@ -68,8 +68,6 @@
 하지만 멀티 프로세스 환경에서는 synchronized만으로는 해당 문제를 해결할 수 없습니다. 이 문제를 해결하기 위해서 분산 락을 활용하였습니다. 분산 락은 여러 프로세스가 공유 데이터를 제어하기 위한 기술로 해당 문제를 해결하기에 적합하다고 생각하였습니다. 구현 방법으로는 MySQL과 Redis중 Redis를 택하였는데 그 이유로는 기존 서비스에서 이미 Redis를 활용하고 있어 별도의 환경 구축이 필요하지 않았고 인메모리 데이터베이스이기 때문에 성능적으로도 이점이 있기 때문입니다.
 
 분산 락을 적용하는 과정에서 많은 에러를 경험했습니다. 그중에서 대표적으로는 락을 해제하는 시점 설정이 있었습니다. 해당 에러는 트랜잭션의 커밋 시점과 락을 해제하는 시점 차이에서 발생하는 에러로 트랙잭션의 커밋이 락 해제보다 늦게 될 경우에 데이터의 무결성이 깨질 수 있다는 점이었습니다. 이러한 점을 놓치지 않고 테스트를 거쳐 프로젝트에 성공적으로 적용하였습니다.
-
-결과적으로 Redis방식의 분산 락을 적용하여 공유 데이터를 제어할 수 있었고 멀티 프로세스 환경에서도 데이터의 무결성을 지킬 수 있었습니다.
 
 ```java
 @Bean
@@ -125,8 +123,6 @@ public class AopForTransaction {
 상점에서는 구매할 수 있는 상품에는 수량이 있습니다. 그렇기 때문에 많은 유저가 동시에 구매를 하는 가정에서 동시성 문제가 발생할 수 있습니다. 
 
 동시성 문제를 해결하는 방법 중에는 격리 수준 설정과 비관적 락이 있습니다. 격리 수준 설정의 경우는 데이터 무결성이 중요할 때 많이 사용되며, 비관적 락의 경우는 성능이 중요할 때 많이 사용됩니다. 만일 금융 관련 서비스에서의 동시성 문제라면 격리 수준 설정을 통해 문제를 해결하겠지만, 상품 구매 서비스는 비관적 락을 사용해도 괜찮다고 판단하였습니다. 이처럼 성능과 무결성 사이에 트레이드 오브를 서비스의 따라 적용하면 될 것 같습니다.
-
-비관적 락은 JPA에서 지원하고 있으며 PESSIMISTIC_READ, PESSIMISTIC_WRITE 타입이 존재합니다. PESSIMISTIC_READ의 경우에는 ‘SELECT ... FOR SHARE’ 방식으로 동작하며 PESSIMISTIC_WRITE는 ‘SELECT ... FOR UPDATE’ 방식으로 동작합니다. 현재 서비스에서는 데이터의 값이 수정되기 때문에 PESSIMISTIC_WRITE를 사용하였으며 @Lock(LockModeType.PESSIMISTIC_WRITE)처럼 어노테이션 형태로 사용할 수 있습니다.
 
 ```java
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -202,9 +198,19 @@ public ScheduleDocumentPaging find(@AuthenticationPrincipal MemberDetails member
 }
 ```
 
-## 성능 개선
+엘라스틱 서치를 도입하여 일정 검색 기능을 구현, 검색 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
+
+**[JMeter]**
+
+MySQL 전문검색
+![mysql](https://github.com/user-attachments/assets/71e30405-942f-459a-ab22-f07b6589f446)
+
+엘라스틱 서치
+![엘라스틱서치](https://github.com/user-attachments/assets/4fc4bbcf-6f3d-42d0-977d-fbd23ec225d8)
 
 ### 조회 기능 개선(인덱스 설계)
+
+
 조회 요청에서의 조건 컬럼을 인덱스 설정 및 불필요한 조인 제거, 조회 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
 
 **[nGrinder]**
@@ -216,16 +222,6 @@ public ScheduleDocumentPaging find(@AuthenticationPrincipal MemberDetails member
 ![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
 
 
-### 검색 기능 개선(엘라스틱 서치)
-엘라스틱 서치를 도입하여 일정 검색 기능을 구현, 검색 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
-
-**[JMeter]**
-
-MySQL 전문검색
-![mysql](https://github.com/user-attachments/assets/71e30405-942f-459a-ab22-f07b6589f446)
-
-엘라스틱 서치
-![엘라스틱서치](https://github.com/user-attachments/assets/4fc4bbcf-6f3d-42d0-977d-fbd23ec225d8)
 
 
 
