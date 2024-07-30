@@ -4,7 +4,7 @@
 - **참여 인원 : 1명**
 - **개발 환경**
     - **언어 : Java 17, JavaScript**
-    - **프레임워크 : Spring Boot 3.2.0, Spring Security**
+    - **프레임워크 : Spring Boot 3.2.0, Spring Security, Spring Data JPA**
     - **데이터베이스 : MySQL, Redis**
     - **도구 : Docker, Jenkins, Elasticsearch, Logstash**
 
@@ -64,7 +64,6 @@
 ### 조회 기능 개선(인덱스 설계)
 
 - 조회 요청에서 사용되는 조건 컬럼에 복합 인덱스를 설정하여 조회 기능 개선
-
 **[nGrinder]**
 
 인덱스 설계 전
@@ -73,9 +72,10 @@
 인덱스 설계 후
 ![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
 
-### Spring Security, OAuth2를 활용한 세션 방식 인증/인가 적용
-
 ### Elasticsearch를 활용한 검색 기능 및 페이징 처리 구현
+
+- Full Text Index(ngram parser)에서 Elasticsearch로 변경하여 검색 기능 개선
+    - 데이터베이스와 동기화를 위하여 Logstash를 활용한 배치 처리 적용
 
 **[JMeter]**
 
@@ -87,7 +87,15 @@ MySQL 전문검색
 
 ### Pessimistic Lock을 활용하여 동시성 문제 해결
 
-- 
+- ㅁㄴㅇ
+
+### Spring Security, OAuth2를 활용한 세션 방식 인증/인가 적용
+
+
+### 비동기 처리 개선
+
+- Third-party API를 호출할 때 사용자 경험 저하 발생
+    - 스레드 풀을 사용하여 비동기적으로 실행하여 개선
 
 ### CI/CD 환경 구축
 
@@ -95,4 +103,5 @@ MySQL 전문검색
 
 ### 로그 설정
 
-- 실행 환경별 로그 출력 설정, 로그 레벨별 파일 저장 설정
+- 실행 환경별 로그 출력 설정
+    - 편의성을 높이기 위해 로그 레벨별 파일 저장 기능 추가
