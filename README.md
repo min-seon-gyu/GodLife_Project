@@ -87,13 +87,13 @@ MySQL 전문검색
 
 ### Pessimistic Lock을 활용하여 동시성 문제 해결
 
-- ㅁㄴㅇ
+- 
 
-### Spring Security, OAuth2를 활용한 세션 방식 인증/인가 적용
-
+### 인증/인가 적용
+- Spring Security, OAuth2 인증/인가 적용
+    - OAuth2 클라이언트를 사용하여 Naver, Google 로그인 구현
 
 ### 비동기 처리 개선
-
 - Third-party API를 호출할 때 사용자 경험 저하 발생
     - 스레드 풀을 사용하여 비동기적으로 실행하여 개선
 
