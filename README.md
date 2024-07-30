@@ -204,15 +204,15 @@ public ScheduleDocumentPaging find(@AuthenticationPrincipal MemberDetails member
 
 ## 성능 개선
 
-### 조회 기능 개선(인덱스 설계, 쿼리 최적화)
+### 조회 기능 개선(인덱스 설계)
 조회 요청에서의 조건 컬럼을 인덱스 설정 및 불필요한 조인 제거, 조회 기능에 대한 부하테스트(100명의 유저가 지속적으로 요청) 결과
 
 **[nGrinder]**
 
-인덱스 설계, 쿼리 최적화 전
+인덱스 설계 전
 ![노인덱스](https://github.com/user-attachments/assets/db17a94e-3c54-4be9-a86d-329abbd60e23)
 
-인덱스 설계, 쿼리 최적화 후
+인덱스 설계 후
 ![인덱스](https://github.com/user-attachments/assets/ce3d850d-1e52-41a2-aae6-a4391cb60168)
 
 
