@@ -59,7 +59,7 @@
 #### [갓생 사이트 프로젝트 v2 - 구매, 포인트, 쿠폰, 보유쿠폰](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v2-%EA%B5%AC%EB%A7%A4-%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%BF%A0%ED%8F%B0)
 
     
-## 새로 배운 내용
+## 기술적 개선 및 고려
 
 ### 분산 락
 
