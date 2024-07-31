@@ -1,4 +1,4 @@
-# 갓생 프로젝트
+# [갓생] 일정 관리 서비스
 - **기간 : 2023년 11월 - 2024년 04월**
 - **담당 : 갓생 사이트 화면 구현 및 백엔드 API 개발**
 - **참여 인원 : 1명**
@@ -8,7 +8,7 @@
     - **데이터베이스 : MySQL, Redis**
     - **도구 : Docker, Jenkins, Elasticsearch, Logstash**
 
-## 프로젝트 설명
+## :mag_right: 프로젝트 설명
 
 ### 아키텍처 설계
 ![캡처](https://github.com/user-attachments/assets/5caf2002-4e8c-4ba6-9ce3-89ad044f238a)
@@ -62,6 +62,7 @@
 
 ### 조회 기능 개선(인덱스 설계)
 - 일정 조회 기능에서 사용되는 조건 컬럼에 복합 인덱스를 설정하여 조회 기능 개선
+
 **[nGrinder]**
 
 인덱스 설계 전
@@ -88,7 +89,7 @@ MySQL 전문검색
 
 ### 인증/인가 적용
 - Spring Security, OAuth2 인증/인가 적용
-    - OAuth2 클라이언트를 사용하여 Naver, Google 로그인 구현
+    - OAuth2 클라이언트 라이브러리를 사용하여 Naver, Google 로그인 구현
 
 ### 비동기 처리 적용
 - Third-party API를 호출할 때 사용자 경험 저하 발생
