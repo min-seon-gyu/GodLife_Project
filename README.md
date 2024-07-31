@@ -37,7 +37,7 @@
 - **쿠폰 기능**
     - 보유 중인 쿠폰을 사용하여 주문 금액을 할인받을 수 있습니다.
  
-## 구현 과정 및 실행 화면
+## :pencil2: 구현 과정 및 실행 화면
 
 ### [갓생 사이트 프로젝트 로그 설정](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%A1%9C%EA%B7%B8-%EC%84%A4%EC%A0%95)
 ### [갓생 사이트 프로젝트 CI/CD](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-CICD)
@@ -54,7 +54,7 @@
 ### [갓생 사이트 프로젝트 v2 - 상점](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v2-%EC%83%81%EC%A0%90)
 ### [갓생 사이트 프로젝트 v2 - 구매, 포인트, 쿠폰, 보유쿠폰](https://velog.io/@gcael/%EA%B0%93%EC%83%9D-%EC%82%AC%EC%9D%B4%ED%8A%B8-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-v2-%EA%B5%AC%EB%A7%A4-%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%BF%A0%ED%8F%B0)
 
-## 기술적 개선 및 고려
+## :fire: 기술적 개선 및 고려
 
 ### 분산 락 적용
 - 멀티 프로세스 환경에서 프로세스 간 데이터 공유 문제를 Redis Lock을 이용해 동시성 제어 구현
