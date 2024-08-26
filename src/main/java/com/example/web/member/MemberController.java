@@ -17,13 +17,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     private final MemberService memberService;
     private final SignUpService signUpService;
     private final MailService mailService;
@@ -39,7 +36,7 @@ public class MemberController {
         memberSignUpDto.validPassword();
         String key = memberService.signUp(memberSignUpDto);
         signUpService.setData(key, memberSignUpDto);
-        executorService.submit(() -> mailService.signUp(memberSignUpDto.getEmail(), key));
+        mailService.signUp(memberSignUpDto.getEmail(), key);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -76,7 +73,7 @@ public class MemberController {
     public ResponseEntity findLoginId(@Valid @RequestBody MemberFindUsernameDto memberFindUsernameDto){
         Optional<Member> findMember = memberRepository.findTop1ByNameAndEmailAndType(memberFindUsernameDto.getName(), memberFindUsernameDto.getEmail(), MemberType.BASIC);
         Member member = findMember.orElseThrow(() -> new RestApiException(ErrorCode.BAD_REQUEST, "해당하는 회원이 존재하지 않습니다."));
-        executorService.submit(() -> mailService.findId(memberFindUsernameDto.getEmail(), member.getUsername()));
+        mailService.findId(memberFindUsernameDto.getEmail(), member.getUsername());
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -84,7 +81,7 @@ public class MemberController {
     @PostMapping("/findPassword")
     public ResponseEntity findPassword(@Valid @RequestBody MemberFindPasswordDto memberFindPasswordDto){
         String password = memberService.findPassword(memberFindPasswordDto);
-        executorService.submit(() -> mailService.findPassword(memberFindPasswordDto.getEmail(), password));
+        mailService.findPassword(memberFindPasswordDto.getEmail(), password);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
